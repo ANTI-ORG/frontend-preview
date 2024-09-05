@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, Component, createRef } from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Link} from 'react-router-dom';
-import {Pagination, Navigation} from 'swiper/modules';
+import {Pagination, Navigation, Autoplay} from 'swiper/modules';
 import SwiperCore from 'swiper';
 import {questsPath} from "../../index.jsx";
 
@@ -35,28 +35,173 @@ import company6CardPic from '../assets/images/company-pics/company-6-card-pic.pn
 
 SwiperCore.use([Navigation, Pagination]);
 
+class RenderContent extends Component {
+    constructor(props) {
+        super(props);
+        this.swiperRef = createRef();
+        this.swiperRefEcosystems = createRef();
+        this.swiperRefSprints = createRef();
+        this.swiperRefNFT = createRef();
+        this.state = {
+            query: '',
+            isPrevButtonDisabled: true,
+            isNextButtonDisabled: false,
+            isPrevButtonEcosystemsDisabled: true,
+            isNextButtonEcosystemsDisabled: false,
+            isPrevButtonDisabledSprints: true,
+            isNextButtonDisabledSprints: false,
+            isPrevButtonDisabledNFT: true,
+            isNextButtonDisabledNFT: false,
+        };
+        this.handlePrev = this.handlePrev.bind(this);
+        this.handleNext = this.handleNext.bind(this);
+        this.handlePrevEcosystems = this.handlePrevEcosystems.bind(this);
+        this.handleNextEcosystems = this.handleNextEcosystems.bind(this);
+        this.handlePrevSprints = this.handlePrevSprints.bind(this);
+        this.handleNextSprints = this.handleNextSprints.bind(this);
+        this.handlePrevNFT = this.handlePrevNFT.bind(this);
+        this.handleNextNFT = this.handleNextNFT.bind(this);
+    }
 
-const renderContent = (props) => {
-    const {
-        handlePrev,
-        handleNext,
-        handlePrevEcosystems,
-        handleNextEcosystems,
-        swiperRef,
-        swiperRefEcosystems,
-        isPrevButtonDisabled,
-        isNextButtonDisabled,
-        isPrevButtonEcosystemsDisabled,
-        isNextButtonEcosystemsDisabled,
-        handleSwiperSlideChange,
-        handleSwiperSlideChangeEcosystems,
-        handlePrevAnti,
-        handleNextAnti,
-        swiperRefAnti,
-        isPrevButtonDisabledAnti,
-        isNextButtonDisabledAnti,
-        handleSwiperSlideChangeAnti
-    } = props;
+    updateButtonStates(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonDisabled: true});
+        } else {
+            this.setState({isPrevButtonDisabled: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonDisabled: true});
+        } else {
+            this.setState({isNextButtonDisabled: false});
+        }
+    }
+
+    updateButtonStatesEcosystems(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonEcosystemsDisabled: true});
+        } else {
+            this.setState({isPrevButtonEcosystemsDisabled: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonEcosystemsDisabled: true});
+        } else {
+            this.setState({isNextButtonEcosystemsDisabled: false});
+        }
+    }
+
+    updateButtonStatesSprints(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonDisabledSprints: true});
+        } else {
+            this.setState({isPrevButtonDisabledSprints: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonDisabledSprints: true});
+        } else {
+            this.setState({isNextButtonDisabledSprints: false});
+        }
+    }
+
+    updateButtonStatesNFT(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonDisabledNFT: true});
+        } else {
+            this.setState({isPrevButtonDisabledNFT: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonDisabledNFT: true});
+        } else {
+            this.setState({isNextButtonDisabledNFT: false});
+        }
+    }
+
+    handlePrev() {
+        if (this.swiperRef.current && this.swiperRef.current.swiper) {
+            this.swiperRef.current.swiper.slidePrev();
+            this.updateButtonStates(this.swiperRef.current.swiper);
+        }
+    }
+
+    handleNext() {
+        if (this.swiperRef.current && this.swiperRef.current.swiper) {
+            this.swiperRef.current.swiper.slideNext();
+            this.updateButtonStates(this.swiperRef.current.swiper);
+        }
+    }
+
+    handlePrevEcosystems() {
+        if (this.swiperRefEcosystems.current && this.swiperRefEcosystems.current.swiper) {
+            this.swiperRefEcosystems.current.swiper.slidePrev();
+            this.updateButtonStatesEcosystems(this.swiperRefEcosystems.current.swiper);
+        }
+    }
+
+    handleNextEcosystems() {
+        if (this.swiperRefEcosystems.current && this.swiperRefEcosystems.current.swiper) {
+            this.swiperRefEcosystems.current.swiper.slideNext();
+            this.updateButtonStatesEcosystems(this.swiperRefEcosystems.current.swiper);
+        }
+    }
+
+    handlePrevSprints() {
+        if (this.swiperRefSprints.current && this.swiperRefSprints.current.swiper) {
+            this.swiperRefSprints.current.swiper.slidePrev();
+            this.updateButtonStatesSprints(this.swiperRefSprints.current.swiper);
+        }
+    }
+
+    handleNextSprints() {
+        if (this.swiperRefSprints.current && this.swiperRefSprints.current.swiper) {
+            this.swiperRefSprints.current.swiper.slideNext();
+            this.updateButtonStatesSprints(this.swiperRefSprints.current.swiper);
+        }
+    }
+
+    handlePrevNFT() {
+        if (this.swiperRefNFT.current && this.swiperRefNFT.current.swiper) {
+            this.swiperRefNFT.current.swiper.slidePrev();
+            this.updateButtonStatesNFT(this.swiperRefNFT.current.swiper);
+        }
+    }
+
+    handleNextNFT() {
+        if (this.swiperRefNFT.current && this.swiperRefNFT.current.swiper) {
+            this.swiperRefNFT.current.swiper.slideNext();
+            this.updateButtonStatesNFT(this.swiperRefNFT.current.swiper);
+        }
+    }
+
+    handleSwiperSlideChange = (swiper) => {
+        this.updateButtonStates(swiper);
+    }
+
+    handleSwiperSlideChangeEcosystems = (swiper) => {
+        this.updateButtonStatesEcosystems(swiper);
+    }
+
+    handleSwiperSlideChangeSprints = (swiper) => {
+        this.updateButtonStatesSprints(swiper);
+    }
+
+    handleSwiperSlideChangeNFT = (swiper) => {
+        this.updateButtonStatesNFT(swiper);
+    }
+
+    handleInputChange = (event) => {
+        this.setState({query: event.target.value});
+    };
+    render() {
+        const {
+            isPrevButtonDisabled,
+            isNextButtonDisabled,
+            isPrevButtonEcosystemsDisabled,
+            isNextButtonEcosystemsDisabled,
+            isPrevButtonDisabledSprints,
+            isNextButtonDisabledSprints,
+            isPrevButtonDisabledNFT,
+            isNextButtonDisabledNFT,
+        } = this.state;
+
 
     const slidesDataNewQuests = [
         {
@@ -234,36 +379,34 @@ const renderContent = (props) => {
         },
     ];
 
-    const antiTokenData = [
+    const slideDataWelcomeBanner = [
         {
-            title: 'ANTI-TOKEN',
-            isPrevButtonDisabled: isPrevButtonDisabledAnti,
-            isNextButtonDisabled: isNextButtonDisabledAnti,
-            handlePrev: handlePrevAnti,
-            handleNext: handleNextAnti,
-            handleSwiperSlideChange: handleSwiperSlideChangeAnti,
-            slides: slidesNewQuests,
+            imageSrc: questCard1QuestPic,
+            altText: "Image 1",
+            title: "XRP Ledger Universe - Earn Exclusive NFTs & Rewards - Phase 1",
+            companyName: "XRP Ledger",
+            companyLogo: company1CardPic,
+            link: "https://qredo.com"
         },
         {
-            title: 'anti-token',
-            isPrevButtonDisabled: isPrevButtonDisabledAnti,
-            isNextButtonDisabled: isNextButtonDisabledAnti,
-            handlePrev: handlePrevAnti,
-            handleNext: handleNextAnti,
-            handleSwiperSlideChange: handleSwiperSlideChangeAnti,
-            slides: slidesNewQuests,
+            imageSrc: questCard2QuestPic,
+            altText: "Image 2",
+            title: "Ethereum Quest - Unlock Unique Tokens and Rewards",
+            companyName: "Ethereum",
+            companyLogo: company2CardPic,
+            link: "https://ethereum.org"
         },
         {
-            title: 'ANTI-TOKEN',
-            isPrevButtonDisabled: isPrevButtonDisabledAnti,
-            isNextButtonDisabled: isNextButtonDisabledAnti,
-            handlePrev: handlePrevAnti,
-            handleNext: handleNextAnti,
-            handleSwiperSlideChange: handleSwiperSlideChangeAnti,
-            slides: slidesNewQuests,
+            imageSrc: questCard3QuestPic,
+            altText: "Image 3",
+            title: "Polkadot Journey - Earn Staking Rewards",
+            companyName: "Polkadot",
+            companyLogo: company3CardPic,
+            link: "https://polkadot.network"
         },
-        // Add more objects here if needed
+        
     ];
+
 
     const slides_ecosystems = slidesDataEcosystems.map((slidesDataEcosystems, index) => (
         <SwiperSlide key={index}>
@@ -276,19 +419,69 @@ const renderContent = (props) => {
             </div>
         </SwiperSlide>
     ));
+
+    const slides_welcome_banner = slideDataWelcomeBanner.map((slideDataWelcomeBanner, index) => (
+        <SwiperSlide key={index}>
+            <a href={slideDataWelcomeBanner.link} rel="noopener noreferrer" target="_blank" className='slide'>
+                <div className='slide-text'>
+                    <div className='quests-pic-name-company'>
+                        <img src={slideDataWelcomeBanner.companyLogo} alt='pic-project'/>
+                        <p>{slideDataWelcomeBanner.companyName}</p>
+                    </div>
+                    <p className='quests-slide-text-name-quest'>{slideDataWelcomeBanner.title}</p>
+                </div>
+                <div className='slide-img'>
+                    <img src={slideDataWelcomeBanner.imageSrc} alt={slideDataWelcomeBanner.altText}/>
+                </div>
+            </a>
+        </SwiperSlide>
+    ));
+
     return (
         <div className='quests-content'>
+            <div className="content-section-text-welcome-banner">
+                <p>Featured</p>
+            </div>
+            <div className='welcome-banner-slider'>
+                <div className='slide-indicators'>
+                        {slideDataWelcomeBanner.map((_, index) => (
+                            <div key={index} className={`indicator ${this.state.activeSlide === index ? 'active' : ''}`}></div>
+                        ))}
+                </div>
+                <div className='welcome-banner-slider-swiper'>
+                    <Swiper
+                        modules={[Autoplay, Pagination]}
+                        spaceBetween={30}
+                        centeredSlides={false}
+                        autoplay={{
+                            delay: 30000,
+                            disableOnInteraction: true,
+                        }}
+                        loop={true}
+                        grabCursor={true}
+                        onSlideChange={(swiper) => this.setState({ activeSlide: swiper.realIndex })}
+                        className='mySwiper'
+                    >
+                        {slides_welcome_banner}
+                    </Swiper>
+                </div>
+            </div>
             <div className="content-section-text">
-                <p>New</p>
+                <div className='content-section-text-last-month'>
+                    <p>Last month recents</p>
+                    <Link to={`${questsPath}/${slidesNewQuests.id}`} rel="noopener noreferrer" className='content-section-text-showall'>
+                        <p>Show all</p>
+                    </Link>
+                </div>
             </div>
             <div className='content-section-slider-new'>
                 <div className={`custom-button-prev ${isPrevButtonDisabled ? 'disabled' : ''}`}
-                    onClick={handlePrev}>
+                    onClick={this.handlePrev}>
                     <img src={arrow} alt="Back"/>
                 </div>
                 <div className="swiper-container">
                     <Swiper
-                        ref={swiperRef}
+                        ref={this.swiperRef}
                         slidesPerView={1}
                         spaceBetween={0}
                         breakpoints={{
@@ -309,14 +502,14 @@ const renderContent = (props) => {
                                 spaceBetween: 0,
                             }
                         }}
-                        onSlideChange={handleSwiperSlideChange}
+                        onSlideChange={this.handleSwiperSlideChange}
                     >
                         {slidesNewQuests}
                     </Swiper>
                 </div>
                 <div
                     className={`custom-button-next ${isNextButtonDisabled ? 'disabled' : ''}`}
-                    onClick={handleNext}
+                    onClick={this.handleNext}
                 >
                     <img src={arrow} alt="Next"/>
                 </div>
@@ -327,13 +520,13 @@ const renderContent = (props) => {
             <div className='content-section-slider-ecosystems'>
                 <div
                     className={`custom-button-prev-ecosystems ${isPrevButtonEcosystemsDisabled ? 'disabled' : ''}`}
-                    onClick={handlePrevEcosystems}
+                    onClick={this.handlePrevEcosystems}
                 >
                     <img src={arrow} alt="Back"/>
                 </div>
                 <div className="swiper-container-ecosystems">
                     <Swiper
-                        ref={swiperRefEcosystems}
+                        ref={this.swiperRefEcosystems}
                         spaceBetween={15}
                         slidesPerView={2}
                         breakpoints={{
@@ -354,69 +547,117 @@ const renderContent = (props) => {
                                 spaceBetween: 5,
                             }
                         }}
-                        onSlideChange={handleSwiperSlideChangeEcosystems}
+                        onSlideChange={this.handleSwiperSlideChangeEcosystems}
                     >
                         {slides_ecosystems}
                     </Swiper>
                 </div>
                 <div
                     className={`custom-button-next-ecosystems ${isNextButtonEcosystemsDisabled ? 'disabled' : ''}`}
-                    onClick={handleNextEcosystems}
+                    onClick={this.handleNextEcosystems}
                 >
                     <img src={arrow} alt="Next"/>
                 </div>
             </div>
-            {antiTokenData.map((data, index) => (
-                <div key={index}>
-                    <div className="content-section-text-anti">
-                        <p>{data.title}</p>
-                    </div>
-                    <div className='content-section-slider-new'>
-                        <div
-                            className={`custom-button-prev ${data.isPrevButtonDisabled ? 'disabled' : ''}`}
-                            onClick={() => handlePrev(data.id)}
-                        >
-                            <img src={arrow} alt="Back"/>
-                        </div>
-                        <div className="swiper-container">
-                            <Swiper
-                                ref={swiperRefAnti}
-                                slidesPerView={1}
-                                spaceBetween={0}
-                                breakpoints={{
-                                    1700: {
-                                        slidesPerView: 3,
-                                        spaceBetween: 95,
-                                    },
-                                    1400: {
-                                        slidesPerView: 3,
-                                        spaceBetween: 20,
-                                    },
-                                    1200: {
-                                        slidesPerView: 2,
-                                        spaceBetween: 20,
-                                    },
-                                    768: {
-                                        slidesPerView: 1,
-                                        spaceBetween: 0,
-                                    }
-                                }}
-                                onSlideChange={() => handleSwiperSlideChangeAnti(data.id)}
-                            >
-                                {slidesNewQuests}
-                            </Swiper>
-                        </div>
-                        <div
-                            className={`custom-button-next ${data.isNextButtonDisabled ? 'disabled' : ''}`}
-                            onClick={() => handleNext(data.id)}
-                        >
-                            <img src={arrow} alt="Next"/>
-                        </div>
-                    </div>
+            <div className="content-section-text-another">
+                <div className='content-section-text-last-month'>
+                    <p>Sprints</p>
+                    <Link to={`${questsPath}/${slidesNewQuests.id}`} rel="noopener noreferrer" className='content-section-text-showall'>
+                        <p>Show all</p>
+                    </Link>
                 </div>
-            ))}
+            </div>
+            <div className='content-section-slider-new'>
+                <div className={`custom-button-prev ${isPrevButtonDisabledSprints ? 'disabled' : ''}`}
+                    onClick={this.handlePrevSprints}>
+                    <img src={arrow} alt="Back"/>
+                </div>
+                <div className="swiper-container">
+                    <Swiper
+                        ref={this.swiperRefSprints}
+                        slidesPerView={1}
+                        spaceBetween={0}
+                        breakpoints={{
+                            1700: {
+                                slidesPerView: 3,
+                                spaceBetween: 95,
+                            },
+                            1400: {
+                                slidesPerView: 3,
+                                spaceBetween: 20,
+                            },
+                            1200: {
+                                slidesPerView: 2,
+                                spaceBetween: 20,
+                            },
+                            768: {
+                                slidesPerView: 1,
+                                spaceBetween: 0,
+                            }
+                        }}
+                        onSlideChange={this.handleSwiperSlideChangeSprints}
+                    >
+                        {slidesNewQuests}
+                    </Swiper>
+                </div>
+                <div
+                    className={`custom-button-next ${isNextButtonDisabledSprints ? 'disabled' : ''}`}
+                    onClick={this.handleNextSprints}
+                >
+                    <img src={arrow} alt="Next"/>
+                </div>
+            </div>
+            <div className="content-section-text-another">
+                <div className='content-section-text-last-month'>
+                    <p>NFT</p>
+                    <Link to={`${questsPath}/${slidesNewQuests.id}`} rel="noopener noreferrer" className='content-section-text-showall'>
+                        <p>Show all</p>
+                    </Link>
+                </div>
+            </div>
+            <div className='content-section-slider-new'>
+                <div className={`custom-button-prev ${isPrevButtonDisabledNFT ? 'disabled' : ''}`}
+                    onClick={this.handlePrevNFT}>
+                    <img src={arrow} alt="Back"/>
+                </div>
+                <div className="swiper-container">
+                    <Swiper
+                        ref={this.swiperRefNFT}
+                        slidesPerView={1}
+                        spaceBetween={0}
+                        breakpoints={{
+                            1700: {
+                                slidesPerView: 3,
+                                spaceBetween: 95,
+                            },
+                            1400: {
+                                slidesPerView: 3,
+                                spaceBetween: 20,
+                            },
+                            1200: {
+                                slidesPerView: 2,
+                                spaceBetween: 20,
+                            },
+                            768: {
+                                slidesPerView: 1,
+                                spaceBetween: 0,
+                            }
+                        }}
+                        onSlideChange={this.handleSwiperSlideChangeNFT}
+                    >
+                        {slidesNewQuests}
+                    </Swiper>
+                </div>
+                <div
+                    className={`custom-button-next ${isNextButtonDisabledNFT ? 'disabled' : ''}`}
+                    onClick={this.handleNextNFT}
+                >
+                    <img src={arrow} alt="Next"/>
+                </div>
+            </div>
         </div>
     );
-};
+    };
+}
 
-export default renderContent;
+export default RenderContent;
