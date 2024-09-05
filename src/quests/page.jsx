@@ -6,7 +6,7 @@ import {Autoplay, Pagination, Navigation} from "swiper/modules";
 import Cookies from "js-cookie";
 import {profilePath} from "../index.jsx";
 import userAPI from "../global/scripts/user-api";
-import RenderContent from "./components/quests-content.jsx";
+import renderContent from "./components/quests-content.jsx";
 
 import "../../node_modules/swiper/swiper-bundle.min.css";
 import "../../node_modules/swiper/swiper.min.css";
@@ -16,12 +16,6 @@ import "./css/quests-main-part-quests-cards.css";
 //Services pics
 import searchIcon from './assets/images/services-pics/search-icon.png';
 import arrow from './assets/images/services-pics/arrow.png';
-import inProgress from './assets/images/services-pics/InProgress.png';
-import promoted from './assets/images/services-pics/Promoted.png';
-import trendly from './assets/images/services-pics/Trendly.png';
-import newq from './assets/images/services-pics/New.png';
-import check from '../../src/global/assets/images/check.png'
-
 //Chains pics
 import BNBChain from './assets/images/chains-pics/bnb-chain.png';
 import Polygonchain from './assets/images/chains-pics/polygon-chain.png';
@@ -54,12 +48,27 @@ SwiperCore.use([Navigation, Pagination]);
 class Quests extends Component {
     constructor(props) {
         super(props);
+        this.swiperRef = createRef();
+        this.swiperRefEcosystems = createRef();
+        this.swiperRefAnti = createRef();
         this.state = {
             query: '',
             selectedStatus: null,
             selectedChains: [],
-            userAccount: null,
+            isPrevButtonDisabled: true,
+            isNextButtonDisabled: false,
+            isPrevButtonDisabledAnti: true,
+            isNextButtonDisabledAnti: false,
+            isPrevButtonEcosystemsDisabled: true,
+            isNextButtonEcosystemsDisabled: false,
+            userAccount: null
         };
+        this.handlePrev = this.handlePrev.bind(this);
+        this.handleNext = this.handleNext.bind(this);
+        this.handlePrevEcosystems = this.handlePrevEcosystems.bind(this);
+        this.handleNextEcosystems = this.handleNextEcosystems.bind(this);
+        this.handlePrevAnti = this.handlePrevAnti.bind(this);
+        this.handleNextAnti = this.handleNextAnti.bind(this);
     }
 
     async componentDidMount() {
@@ -68,6 +77,99 @@ class Quests extends Component {
             const userAccount = await userAPI.getUser(accessToken);
             this.setState({userAccount});
         }
+    }
+
+    updateButtonStates(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonDisabled: true});
+        } else {
+            this.setState({isPrevButtonDisabled: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonDisabled: true});
+        } else {
+            this.setState({isNextButtonDisabled: false});
+        }
+    }
+
+    updateButtonStatesEcosystems(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonEcosystemsDisabled: true});
+        } else {
+            this.setState({isPrevButtonEcosystemsDisabled: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonEcosystemsDisabled: true});
+        } else {
+            this.setState({isNextButtonEcosystemsDisabled: false});
+        }
+    }
+
+    updateButtonStatesAnti(swiper) {
+        if (swiper.isBeginning) {
+            this.setState({isPrevButtonDisabledAnti: true});
+        } else {
+            this.setState({isPrevButtonDisabledAnti: false});
+        }
+        if (swiper.isEnd) {
+            this.setState({isNextButtonDisabledAnti: true});
+        } else {
+            this.setState({isNextButtonDisabledAnti: false});
+        }
+    }
+
+    handlePrev() {
+        if (this.swiperRef.current && this.swiperRef.current.swiper) {
+            this.swiperRef.current.swiper.slidePrev();
+            this.updateButtonStates(this.swiperRef.current.swiper);
+        }
+    }
+
+    handleNext() {
+        if (this.swiperRef.current && this.swiperRef.current.swiper) {
+            this.swiperRef.current.swiper.slideNext();
+            this.updateButtonStates(this.swiperRef.current.swiper);
+        }
+    }
+
+    handlePrevAnti() {
+        if (this.swiperRefAnti.current && this.swiperRefAnti.current.swiper) {
+            this.swiperRefAnti.current.swiper.slidePrev();
+            this.updateButtonStatesAnti(this.swiperRefAnti.current.swiper);
+        }
+    }
+
+    handleNextAnti() {
+        if (this.swiperRefAnti.current && this.swiperRefAnti.current.swiper) {
+            this.swiperRefAnti.current.swiper.slideNext();
+            this.updateButtonStatesAnti(this.swiperRefAnti.current.swiper);
+        }
+    }
+
+    handlePrevEcosystems() {
+        if (this.swiperRefEcosystems.current && this.swiperRefEcosystems.current.swiper) {
+            this.swiperRefEcosystems.current.swiper.slidePrev();
+            this.updateButtonStatesEcosystems(this.swiperRefEcosystems.current.swiper);
+        }
+    }
+
+    handleNextEcosystems() {
+        if (this.swiperRefEcosystems.current && this.swiperRefEcosystems.current.swiper) {
+            this.swiperRefEcosystems.current.swiper.slideNext();
+            this.updateButtonStatesEcosystems(this.swiperRefEcosystems.current.swiper);
+        }
+    }
+
+    handleSwiperSlideChange = (swiper) => {
+        this.updateButtonStates(swiper);
+    }
+
+    handleSwiperSlideChangeEcosystems = (swiper) => {
+        this.updateButtonStatesEcosystems(swiper);
+    }
+
+    handleSwiperSlideChangeAnti = (swiper) => {
+        this.updateButtonStatesAnti(swiper);
     }
 
     handleInputChange = (event) => {
@@ -103,10 +205,6 @@ class Quests extends Component {
         }
     };
 
-    handleClearSelectedChains() {
-        this.setState({ selectedChains: [] });
-    }
-
     renderSearchBar() {
         return (
             <div className="search-bar-area">
@@ -125,6 +223,149 @@ class Quests extends Component {
         );
     }
 
+    renderWelcomeBanner() {
+        return (
+            <div className='welcome-banner'>
+                <div className='welcome-banner-text'>
+                    <span>
+                        <span
+                            className="earn-points-and-rewards-by-contributing-to-your-favourite-web-3-community-span">
+                            Earn
+                        </span>
+                        <span
+                            className="earn-points-and-rewards-by-contributing-to-your-favourite-web-3-community-span2">
+                            points
+                            <br/>
+                        </span>
+                        <span
+                            className="earn-points-and-rewards-by-contributing-to-your-favourite-web-3-community-span3">
+                            and
+                        </span>
+                        <span
+                            className="earn-points-and-rewards-by-contributing-to-your-favourite-web-3-community-span4">
+                            rewards
+                            <br/>
+                        </span>
+                        <span
+                            className="earn-points-and-rewards-by-contributing-to-your-favourite-web-3-community-span5">
+                            by Contributing to
+                            <br/>
+                            Your
+                            <br/>
+                            Favourite Web3
+                            <br/>
+                            Community
+                        </span>
+                    </span>
+                    {this.renderChainLinks()}
+                </div>
+                {this.renderWelcomeBannerSlider()}
+            </div>
+        );
+    }
+
+    renderChainLinks() {
+        return (
+            <div className="chain-link-images">
+                <a href="https://www.bnbchain.org" rel="noopener noreferrer">
+                    <img className="image-66" src={BNBChain} alt="BNB Chain"/>
+                </a>
+                <a href="https://polygon.technology" rel="noopener noreferrer">
+                    <img className="image-67" src={Polygonchain} alt="Polygon Chain"/>
+                </a>
+                <a href="https://solana.com" rel="noopener noreferrer">
+                    <img className="image-68" src={SolanaChain} alt="Solana Chain"/>
+                </a>
+                <a href="https://optimism.io" rel="noopener noreferrer">
+                    <img className="image-69" src={OPChain} alt="OP Chain"/>
+                </a>
+                <a href="https://arbitrum.io" rel="noopener noreferrer">
+                    <img className="image-70" src={ArbitrumChain} alt="Arbitrum Chain"/>
+                </a>
+                <a href="https://zebrachain.org" rel="noopener noreferrer">
+                    <img className="image-71" src={ZebraChain} alt="Zebra Chain"/>
+                </a>
+                <a href="https://avax.network" rel="noopener noreferrer">
+                    <img className="image-72" src={AvalancheChain} alt="Avalanche Chain"/>
+                </a>
+                <a href="https://villagerchain.com" rel="noopener noreferrer">
+                    <img className="image-73" src={VillagerChain} alt="Villager Chain"/>
+                </a>
+                <a href="https://scroll.io" rel="noopener noreferrer">
+                    <img className="image-74" src={ScroolChain} alt="Scroll Chain"/>
+                </a>
+                <a href="https://qredo.com" rel="noopener noreferrer">
+                    <img className="image-75" src={QredoChain} alt="Qredo Chain"/>
+                </a>
+            </div>
+        );
+    }
+
+    renderWelcomeBannerSlider() {
+        const slideDataWelcomeBanner = [
+            {
+                imageSrc: questCard1QuestPic,
+                altText: "Image 1",
+                title: "XRP Ledger Universe - Earn Exclusive NFTs & Rewards - Phase 1",
+                companyName: "XRP Ledger",
+                companyLogo: company1CardPic,
+                link: "https://qredo.com"
+            },
+            {
+                imageSrc: questCard2QuestPic,
+                altText: "Image 2",
+                title: "Ethereum Quest - Unlock Unique Tokens and Rewards",
+                companyName: "Ethereum",
+                companyLogo: company2CardPic,
+                link: "https://ethereum.org"
+            },
+            {
+                imageSrc: questCard3QuestPic,
+                altText: "Image 3",
+                title: "Polkadot Journey - Earn Staking Rewards",
+                companyName: "Polkadot",
+                companyLogo: company3CardPic,
+                link: "https://polkadot.network"
+            },
+        ];
+        return (
+            <div className='welcome-banner-slider'>
+                <div className='slide-indicators'>
+                    {slideDataWelcomeBanner.map((_, index) => (
+                        <div key={index} className={`indicator ${this.state.activeSlide === index ? 'active' : ''}`}></div>
+                    ))}
+                </div>
+                <div className='welcome-banner-slider-swiper'>
+                    <Swiper
+                        modules={[Autoplay, Pagination]}
+                        spaceBetween={30}
+                        centeredSlides={false}
+                        autoplay={{
+                            delay: 3000,
+                            disableOnInteraction: true,
+                        }}
+                        loop={true}
+                        grabCursor={true}
+                        onSlideChange={(swiper) => this.setState({ activeSlide: swiper.realIndex })}
+                        className='mySwiper'
+                    >
+                        {slideDataWelcomeBanner.map((slide, index) => (
+                            <SwiperSlide key={index}>
+                                {this.renderSlide(
+                                    slide.imageSrc,
+                                    slide.altText,
+                                    slide.title,
+                                    slide.companyName,
+                                    slide.companyLogo,
+                                    slide.link
+                                )}
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </div>
+            </div>
+        );
+    }
 
     renderSlide(imageSrc, altText, title, companyName, companyLogo, link) {
         return (
@@ -146,184 +387,96 @@ class Quests extends Component {
         const {selectedStatus, selectedChains} = this.state;
         return (
             <div className="sidebarFilters">
+                <div className="sort-by">
+                    <label htmlFor="sortSelect">Sort by</label>
+                    <select id="sortSelect">
+                        <option value="lastAdded">Last Added</option>
+                        <option value="expiringDate">Expiring Date</option>
+                    </select>
+                </div>
                 <div className="status">
                     <label>Status</label>
                     <div
                         className={`status-tile ${selectedStatus === 'recommended' ? 'selected' : ''}`}
                         onClick={() => this.handleStatusClick('recommended')}
                     >
-                        <img src={inProgress} alt={'inProgress'}/>
-                        <p>In Progress</p>
+                        Recommended
                     </div>
                     <div
                         className={`status-tile ${selectedStatus === 'inProgress' ? 'selected' : ''}`}
                         onClick={() => this.handleStatusClick('inProgress')}
                     >
-                        <img src={promoted} alt={'promoted'}/>
-                        <p>Promoted</p>
+                        In Progress
                     </div>
                     <div
                         className={`status-tile ${selectedStatus === 'new' ? 'selected' : ''}`}
                         onClick={() => this.handleStatusClick('new')}
                     >
-                        <img src={newq} alt={'newq'}/>
-                        <p>Trending</p>
-                    </div>
-                    <div
-                        className={`status-tile ${selectedStatus === 'trendly' ? 'selected' : ''}`}
-                        onClick={() => this.handleStatusClick('trendly')}
-                    >
-                        <img src={trendly} alt={'trendly'} style={{ width: '22px', height: '22px' }}/>
-                        <p>Popular</p>
+                        New
                     </div>
                 </div>
                 <div className="chain">
-                    <label>
-                        Chain {selectedChains.length > 0 && `[${selectedChains.length}]`}
-                        {selectedChains.length > 0 && (
-                            <span onClick={() => this.handleClearSelectedChains()} style={{ cursor: 'pointer', marginLeft: '2px', fontSize: '16px', fontFamily: 'Pixel Operator HB, sans-serif' }}>✖</span>
-                        )}
-                    </label>
+                    <label>Chain</label>
                     <div className="scroll-menu">
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('bnbChain') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('bnbChain')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={BNBChain} alt={'BNBChain'}/>
-                                <p>BNB Chain</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('bnbChain') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            BNB Chain
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('opMainnet') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('opMainnet')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={OPChain} alt={'OPChain'}/>
-                                <p>OP Mainnet</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('opMainnet') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            OP Mainnet
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('scroll') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('scroll')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={ScroolChain} alt={'ScroolChain'}/>
-                                <p>Scroll</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('scroll') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Scroll
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('arbitrum') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('arbitrum')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={ArbitrumChain} alt={'ArbitrumChain'}/>
-                                <p>Arbitrum</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('arbitrum') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Arbitrum
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('avax') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('avax')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={AvalancheChain} alt={'AvalancheChain'}/>
-                                <p>Avalanche</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('avax') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Avalanche
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('Polygon') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('Polygon')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={Polygonchain} alt={'Polygonchain'}/>
-                                <p>Polygon</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('Polygon') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Polygon
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('Qredo') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('Qredo')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={QredoChain} alt={'QredoChain'}/>
-                                <p>Qredo</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('Qredo') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Qredo
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('Solana') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('Solana')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={SolanaChain} alt={'SolanaChain'}/>
-                                <p>Solana</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('Solana') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Solana
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('Villager') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('Villager')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={VillagerChain} alt={'VillagerChain'}/>
-                                <p>Villager</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('Villager') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Villager
                         </div>
                         <div
-                            className={`chain-tile`}
+                            className={`chain-tile ${selectedChains.includes('Zebra') ? 'selected' : ''}`}
                             onClick={() => this.handleChainClick('Zebra')}
                         >
-                            <div className="chain-tile-chainname">
-                                <img src={ZebraChain} alt={'ZebraChain'}/>
-                                <p>Zebra</p>
-                            </div>
-                            <div className="chain-tile-select">
-                                {selectedChains.includes('Zebra') && (
-                                    <img src={check} alt={'check'}/>
-                                )}
-                            </div>
+                            Zebra
                         </div>
                     </div>
                 </div>
@@ -361,16 +514,33 @@ class Quests extends Component {
         }
     }
 
-    
-
     render() {
         return (
             <div className='quests-page'>
-                {/* {this.renderWelcomeBanner()} */}
+                {this.renderSearchBar()}
+                {this.renderWelcomeBanner()}
                 <div className="main-part-of-quest-page">
-                    <RenderContent />
+                    {renderContent({
+                        handlePrev: this.handlePrev,
+                        handleNext: this.handleNext,
+                        handlePrevEcosystems: this.handlePrevEcosystems,
+                        handleNextEcosystems: this.handleNextEcosystems,
+                        handlePrevAnti: this.handlePrevAnti,
+                        handleNextAnti: this.handleNextAnti,
+                        swiperRef: this.swiperRef,
+                        swiperRefEcosystems: this.swiperRefEcosystems,
+                        swiperRefAnti: this.swiperRefAnti,
+                        isPrevButtonDisabled: this.state.isPrevButtonDisabled,
+                        isNextButtonDisabled: this.state.isNextButtonDisabled,
+                        isPrevButtonEcosystemsDisabled: this.state.isPrevButtonEcosystemsDisabled,
+                        isNextButtonEcosystemsDisabled: this.state.isNextButtonEcosystemsDisabled,
+                        isPrevButtonDisabledAnti: this.state.isPrevButtonDisabledAnti,
+                        isNextButtonDisabledAnti: this.state.isNextButtonDisabledAnti,
+                        handleSwiperSlideChange: this.handleSwiperSlideChange,
+                        handleSwiperSlideChangeEcosystems: this.handleSwiperSlideChangeEcosystems,
+                        handleSwiperSlideChangeAnti: this.handleSwiperSlideChangeAnti,
+                    })}
                     <div className='quest-filter-container'>
-                        {this.renderSearchBar()}
                         {this.renderSidebarFilters()}
                         {this.state.userAccount ? (<p className='MyProgressLabel'>My Progress</p>) : null}
                         {this.renderSidebarProgressXP()}

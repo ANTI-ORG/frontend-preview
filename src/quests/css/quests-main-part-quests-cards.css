@@ -1,170 +1,20 @@
 .quests-content {
-    display: flex; /* Обеспечивает вертикальное расположение "New" и слайдера */
+    flex: 1;
+    display: block; /* Обеспечивает вертикальное расположение "New" и слайдера */
+    align-items: center;
+    justify-content: center;
     width: 100%;
     margin: 0 auto; /* Центрирование всего контейнера */
     max-width: 1270px;
-    flex-direction: column;
-    padding-right: 20px;
 }
 
-/*Welcome slider*/
-.content-section-text-welcome-banner {
-    display: flex;
-    font-size: 36px;
-    padding: 0 63px;
-    font-family: 'Pixel Operator HB 8', sans-serif;
-}
-
-.mySwiper {
-    width: 100%;
-}
-
-.slide-indicators {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 8px;
-    max-height: 10px;
-    max-width: 1100px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.indicator {
-    width: 10px;
-    height: 10px;
-    background-color: #404040;
-    margin-left: 5px;
-}
-
-.indicator.active {
-    background-color: #ccc;
-}
-
-.welcome-banner-slider {
-    background: #000000;
-    min-height: 200px;
-    min-width: 100px;
-    width: 100%;
-    max-height: 500px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: max-width 0.3s ease, max-height 0.3s ease;
-    padding-right: 35px;
-    padding-left: 65px;
-    box-sizing: border-box;
-}
-
-.welcome-banner-slider-swiper {
-    background: #000000;
-    border: 2px solid #ffffff;
-    display: flex;
-    max-width: 1100px;
-    width: 100%;
-    max-height: 500px;
-    box-sizing: border-box;
-}  
-
-.slide {
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: center;
-    max-height: 500px;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.slide-text {
-    /* display: flex; */
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    flex-direction: column;
-}
-
-.slide-img {
-    display: flex;
-    max-width: 350px;
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    transition: width 0.3s ease, height 0.3s ease;
-    box-sizing: border-box;
-}
-
-.slide-img img {
-    max-width: 350px;
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    transition: width 0.3s ease, height 0.3s ease;
-}
-
-.quests-pic-name-company {
-    max-width: 100%;
-    /* max-height: 30px; */
-    /* padding-top: 10px;
-    padding-bottom: 5px; */
-    align-items: center;
-    justify-content: flex-start;
-    font-size: 24px;
-    display: flex;
-}
-
-.quests-pic-name-company img {
-    max-width: 30px;
-    max-height: 30px;
-    margin-right: 5px;
-}
-.quests-pic-name-company p {
-    font-size: 24px;
-    transition: font-size 0.3s ease;
-    font-family: "Pixel Operator HB", sans-serif;
-    margin: 0;
-    color: #A6A6A6;
-}
-
-.quests-slide-text-name-quest {
-    font-size: 36px;
-    max-height: 40px;
-    margin-top: 0px;
-    font-family: "Pixel Operator HB", sans-serif;
-}
-
-/*Last month recents quests*/
+/*New quests*/
 
 .content-section-text {
-    margin-top: 50px;
-    display: flex;
     font-size: 36px;
-    padding-left: 63px;
+    padding: 0 30px;
     font-family: 'Pixel Operator HB 8', sans-serif;
-    height: 55px;
-    box-sizing: border-box;
-    width: 100%;
-    padding-right: 35px;
-}
-
-.content-section-text-last-month {
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1100px;
-    display: flex;
-    padding-bottom: 5px;
-}
-
-.content-section-text-showall {
-    display: flex;
-    align-items: flex-end;
-}
-
-.content-section-text-showall p {
-    font-size: 24px;
-    font-family: 'Pixel Operator', sans-serif;
-    margin: 0;
-    align-items: flex-end;
+    margin-bottom: 20px; /* Отступ между текстом и слайдером */
 }
 
 .content-section-slider-new {
@@ -174,7 +24,7 @@
     display: flex;
     max-height: 404px;
     align-items: center;
-    margin-right: auto;
+    margin: 0 auto;
 }
 
 .swiper-container {
@@ -271,9 +121,7 @@
     height: 100%;
     max-height: 200px;
     margin-top: 0;
-    box-sizing: border-box;
 }
-
 
 .quests-card-quests a {
     height: 100%;
@@ -347,8 +195,6 @@
 
 .quests-card-quests-points-tasks {
     height: auto;
-    width: 100%;
-    box-sizing: border-box;
     padding: 0 15px;
     justify-content: space-between; /* Распределяет элементы по краям */
     align-items: center; /* Выравнивает элементы по центру по вертикали */
@@ -416,15 +262,13 @@
 /*Ecosystems */
 
 .content-section-text-ecosystems {
-    margin-top: 50px;
-    display: flex;
+    margin-top: 100px;
     font-size: 36px;
-    padding-left: 63px;
+    padding: 0 30px;
     font-family: 'Pixel Operator HB 8', sans-serif;
-    height: 55px;
-    box-sizing: border-box;
-    width: 100%;
-    padding-right: 35px;
+    margin-bottom: 20px; /* Отступ между текстом и слайдером */
+    margin: auto;
+    margin-top: 70px;
 }
 
 .content-section-slider-ecosystems {
@@ -434,7 +278,7 @@
     display: flex;
     max-height: 404px;
     align-items: center;
-    margin-right: auto;
+    margin: 0 auto;
 }
 
 
@@ -560,14 +404,12 @@
 
 /* Another quests */
 
-.content-section-text-another {
-    margin-top: 50px;
-    display: flex;
+.content-section-text-anti {
+    margin-top: 100px;
     font-size: 36px;
-    padding-left: 63px;
+    padding: 0 30px;
     font-family: 'Pixel Operator HB 8', sans-serif;
-    height: 55px;
-    box-sizing: border-box;
-    width: 100%;
-    padding-right: 35px;
+    margin-bottom: 20px; /* Отступ между текстом и слайдером */
+    margin: auto;
+    margin-top: 70px;
 }
