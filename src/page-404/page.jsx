@@ -1,5 +1,4 @@
 import {Component} from "react";
-import {page404Path} from "../index.jsx";
 
 import "./css/404.css";
 
