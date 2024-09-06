@@ -58,6 +58,7 @@ class Quests extends Component {
             query: '',
             selectedStatus: null,
             selectedChains: [],
+            selectedCommunities: [],
             userAccount: null,
         };
     }
@@ -107,6 +108,23 @@ class Quests extends Component {
         this.setState({ selectedChains: [] });
     }
 
+    handleCommunitiesClick = (communities) => {
+        const {selectedCommunities} = this.state;
+        if (selectedCommunities.includes(communities)) {
+            // Если элемент уже выбран, удаляем его из массива
+            this.setState({
+                selectedCommunities: selectedCommunities.filter((selectedCommunities) => selectedCommunities !== communities),
+            });
+        } else {
+            // Если элемент не выбран, добавляем его в массив
+            this.setState({selectedCommunities: [...selectedCommunities, communities]});
+        }
+    };
+
+    handleClearSelectedCommunities() {
+        this.setState({ selectedCommunities: [] });
+    }
+
     renderSearchBar() {
         return (
             <div className="search-bar-area">
@@ -143,7 +161,7 @@ class Quests extends Component {
 
 
     renderSidebarFilters() {
-        const {selectedStatus, selectedChains} = this.state;
+        const {selectedStatus, selectedChains, selectedCommunities} = this.state;
         return (
             <div className="sidebarFilters">
                 <div className="status">
@@ -321,6 +339,156 @@ class Quests extends Component {
                             </div>
                             <div className="chain-tile-select">
                                 {selectedChains.includes('Zebra') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="chain">
+                    <label>
+                        Communities {selectedCommunities.length > 0 && `[${selectedCommunities.length}]`}
+                        {selectedCommunities.length > 0 && (
+                            <span onClick={() => this.handleClearSelectedCommunities()} style={{ cursor: 'pointer', marginLeft: '2px', fontSize: '16px', fontFamily: 'Pixel Operator HB, sans-serif' }}>✖</span>
+                        )}
+                    </label>
+                    <div className="scroll-menu">
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('bnbChain')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={BNBChain} alt={'BNBChain'}/>
+                                <p>BNB Chain</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('bnbChain') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('opMainnet')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={OPChain} alt={'OPChain'}/>
+                                <p>OP Mainnet</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('opMainnet') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('scroll')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={ScroolChain} alt={'ScroolChain'}/>
+                                <p>Scroll</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('scroll') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('arbitrum')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={ArbitrumChain} alt={'ArbitrumChain'}/>
+                                <p>Arbitrum</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('arbitrum') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('avax')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={AvalancheChain} alt={'AvalancheChain'}/>
+                                <p>Avalanche</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('avax') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('Polygon')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={Polygonchain} alt={'Polygonchain'}/>
+                                <p>Polygon</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('Polygon') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('Qredo')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={QredoChain} alt={'QredoChain'}/>
+                                <p>Qredo</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('Qredo') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('Solana')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={SolanaChain} alt={'SolanaChain'}/>
+                                <p>Solana</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('Solana') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('Villager')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={VillagerChain} alt={'VillagerChain'}/>
+                                <p>Villager</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('Villager') && (
+                                    <img src={check} alt={'check'}/>
+                                )}
+                            </div>
+                        </div>
+                        <div
+                            className={`chain-tile`}
+                            onClick={() => this.handleCommunitiesClick('Zebra')}
+                        >
+                            <div className="chain-tile-chainname">
+                                <img src={ZebraChain} alt={'ZebraChain'}/>
+                                <p>Zebra</p>
+                            </div>
+                            <div className="chain-tile-select">
+                                {selectedCommunities.includes('Zebra') && (
                                     <img src={check} alt={'check'}/>
                                 )}
                             </div>
