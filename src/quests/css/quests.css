@@ -180,7 +180,8 @@
 }
 
 label {
-  display: block;
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
   font-size: 22px;
   font-family: "Pixel Operator", sans-serif;
@@ -282,7 +283,7 @@ select {
   width: 100%;
   max-width: 335px;
   margin-top: 15px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .sidebarProgressXP {
