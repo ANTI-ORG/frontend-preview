@@ -18,7 +18,7 @@ import searchIcon from './assets/images/services-pics/search-icon.png';
 import arrow from './assets/images/services-pics/arrow.png';
 import inProgress from './assets/images/services-pics/in-progress.png';
 import promoted from './assets/images/services-pics/promoted.png';
-import trending from './assets/images/services-pics/trendly.png';
+import trending from './assets/images/services-pics/trending.png';
 import newq from './assets/images/services-pics/new.png';
 import check from '../../src/global/assets/images/check.png';
 import cross from '../../src/global/assets/images/cross.png';
