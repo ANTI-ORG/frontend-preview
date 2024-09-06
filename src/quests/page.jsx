@@ -16,11 +16,12 @@ import "./css/quests-main-part-quests-cards.css";
 //Services pics
 import searchIcon from './assets/images/services-pics/search-icon.png';
 import arrow from './assets/images/services-pics/arrow.png';
-import inProgress from './assets/images/services-pics/InProgress.png';
-import promoted from './assets/images/services-pics/Promoted.png';
-import trendly from './assets/images/services-pics/Trendly.png';
-import newq from './assets/images/services-pics/New.png';
-import check from '../../src/global/assets/images/check.png'
+import inProgress from './assets/images/services-pics/in-progress.png';
+import promoted from './assets/images/services-pics/promoted.png';
+import trending from './assets/images/services-pics/trendly.png';
+import newq from './assets/images/services-pics/new.png';
+import check from '../../src/global/assets/images/check.png';
+import cross from '../../src/global/assets/images/cross.png';
 
 //Chains pics
 import BNBChain from './assets/images/chains-pics/bnb-chain.png';
@@ -188,10 +189,10 @@ class Quests extends Component {
                         <p>Trending</p>
                     </div>
                     <div
-                        className={`status-tile ${selectedStatus === 'trendly' ? 'selected' : ''}`}
-                        onClick={() => this.handleStatusClick('trendly')}
+                        className={`status-tile ${selectedStatus === 'trending' ? 'selected' : ''}`}
+                        onClick={() => this.handleStatusClick('trending')}
                     >
-                        <img src={trendly} alt={'trendly'} style={{ width: '22px', height: '22px' }}/>
+                        <img src={trending} alt={'trending'} style={{ width: '22px', height: '22px' }}/>
                         <p>Popular</p>
                     </div>
                 </div>
@@ -199,7 +200,12 @@ class Quests extends Component {
                     <label>
                         Chain {selectedChains.length > 0 && `[${selectedChains.length}]`}
                         {selectedChains.length > 0 && (
-                            <span onClick={() => this.handleClearSelectedChains()} style={{ cursor: 'pointer', marginLeft: '2px', fontSize: '16px', fontFamily: 'Pixel Operator HB, sans-serif' }}>✖</span>
+                            <img
+                                className={`cross-icon small`}
+                                src={cross}
+                                alt={'cross'}
+                                onClick={() => this.handleClearSelectedChains()}
+                            />
                         )}
                     </label>
                     <div className="scroll-menu">
@@ -349,7 +355,12 @@ class Quests extends Component {
                     <label>
                         Communities {selectedCommunities.length > 0 && `[${selectedCommunities.length}]`}
                         {selectedCommunities.length > 0 && (
-                            <span onClick={() => this.handleClearSelectedCommunities()} style={{ cursor: 'pointer', marginLeft: '2px', fontSize: '16px', fontFamily: 'Pixel Operator HB, sans-serif' }}>✖</span>
+                            <img
+                                className={`cross-icon small`}
+                                src={cross}
+                                alt={'cross'}
+                                onClick={() => this.handleClearSelectedCommunities()}
+                            />
                         )}
                     </label>
                     <div className="scroll-menu">

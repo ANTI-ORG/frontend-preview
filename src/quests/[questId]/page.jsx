@@ -7,7 +7,7 @@ import "./css/quest-tasks-page.css";
 
 import leftSectionLogoCompanyTasks from "../assets/images/company-pics/company-1-card-pic.png";
 import rightSectionLogoCompanyTasks from "../assets/images/company-pics/company-2-card-pic.png";
-import linkTask from "../assets/images/services-pics/linkTask.png";
+import linkTask from "../assets/images/services-pics/link-task.png";
 
 
 SwiperCore.use([Navigation, Pagination]);
