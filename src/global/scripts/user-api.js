@@ -2,7 +2,7 @@ const TEST_NEW_API = false;
 
 
 class UserAPI {
-    base_url = 'https://anti-social-production-b971.up.railway.app/';
+    base_url = 'https://anti-backend-production.up.railway.app/';
 
     generatedOptions = (method, acceptOption, body, token) => {
         const acceptOptions = {
@@ -203,7 +203,7 @@ class UserAPI {
 }
 
 class UserAPIBeta {
-    base_url = 'https://anti-social-production-b971.up.railway.app/';
+    base_url = 'https://anti-backend-production.up.railway.app/';
 
     generatedOptions = (method, acceptOption, body, token, noCors) => {
         const acceptOptions = {
