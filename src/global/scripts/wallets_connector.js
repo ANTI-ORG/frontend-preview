@@ -68,7 +68,7 @@ const connectWallet = async (wallet, connectType, onWalletConnect) => {
         }
 
         if (!account) {
-            throw Error(`Не удалось получить ${wallet} аккаунт.`);
+            console.error(`Не удалось получить ${wallet} аккаунт.`);
         }
 
         const tempTokenJson = await userAPI.generateNonce(account);
