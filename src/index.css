@@ -143,3 +143,9 @@ img {
 .black-button.disabled * {
     cursor: var(--default);
 }
+
+.cross-icon.small {
+    width: 15px;
+    margin-left: 5px;
+    cursor: var(--pointer);
+}
