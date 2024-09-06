@@ -8,10 +8,8 @@ import QuestCard from "../global/components/quest-card/component.jsx";
 import ProgressBar from "../global/components/progress-bar/component.jsx";
 import Pentagon, {countPentagonWidth} from "../global/components/pentagon/component.jsx";
 import userAPI from "../global/scripts/user-api.js";
-import {
-    formatUsername, formatWalletAddress, formatDatetime,
-    percentageToColor
-} from "../global/scripts/utils.js";
+import {formatUsername, formatWalletAddress, timeFromDatetime} from "../global/scripts/utils/formatters.js";
+import {percentageToColor} from "../global/scripts/utils/color-helper.js";
 
 import "./css/profile.css";
 
@@ -154,7 +152,7 @@ const IDCard = ({userAccount}) => {
                         maxLevelXp={maxLevelXp}
                     />
                     <div className={`profile-id-card-user-joined-date`}>
-                        <h1>Joined {formatDatetime(userRegisteredAt)}</h1>
+                        <h1>Joined {timeFromDatetime(userRegisteredAt)}</h1>
                     </div>
                 </div>
                 <button

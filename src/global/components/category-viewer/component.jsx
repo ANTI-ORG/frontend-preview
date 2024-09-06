@@ -1,7 +1,5 @@
 import {useRef, useState, useEffect} from "react";
-import {
-    splitCSSValue, assembleCSSValue, sumCSSValues
-} from "../../scripts/utils.js";
+import {splitCSSValue, assembleCSSValue, sumCSSValues} from "../../scripts/utils/css-helper.js";
 
 import "./css/category-viewer.css";
 

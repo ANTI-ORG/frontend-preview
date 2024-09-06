@@ -1,4 +1,4 @@
-import {percentageToColor} from "../../scripts/utils.js";
+import {percentageToColor} from "../../scripts/utils/color-helper.js";
 
 import './css/progress-bar.css'
 

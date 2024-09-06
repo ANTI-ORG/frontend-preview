@@ -8,7 +8,7 @@ import {
     PointElement
 } from "chart.js";
 import LoadingScreen from "../global/components/loading-screen/component.jsx";
-import {dataLoaded} from "../global/scripts/utils.js";
+import {dataLoaded} from "../global/scripts/utils/misc.js";
 import CoinView from "./components/coin-view.jsx";
 import coinStatsAPI from "./scripts/crypto-api.js";
 import CurrencyFormat from "./scripts/currency-format.js";

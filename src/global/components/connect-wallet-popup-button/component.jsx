@@ -1,8 +1,6 @@
 import {useState} from "react";
-import Cookies from "js-cookie";
 import PopupMenu from "../popup-menu/component.jsx";
 import {connectWallet, okxReplaces, walletInstalled} from "../../scripts/wallets_connector.js";
-import userAPI from "../../scripts/user-api.js";
 
 import "./css/connect-wallet-popup-button.css";
 

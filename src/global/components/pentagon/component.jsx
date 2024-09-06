@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {splitCSSValue, assembleCSSValue} from "../../scripts/utils.js";
+import {splitCSSValue, assembleCSSValue} from "../../scripts/utils/css-helper.js";
 
 import "./css/pentagon.css";
 

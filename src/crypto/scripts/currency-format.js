@@ -1,4 +1,4 @@
-import {insertCharIn} from "../../global/scripts/utils.js";
+import {insertCharIn} from "../../global/scripts/utils/str-helper.js";
 
 const CurrencyFormat = ({
                             value,

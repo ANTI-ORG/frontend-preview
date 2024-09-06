@@ -1,10 +1,13 @@
 import {useEffect, useRef, useState} from "react";
 import {Link, useLocation} from "react-router-dom";
-import Cookies from "js-cookie";
+import {
+    blogPath, cryptoPath, homePath, profilePath, questsPath,
+    getCursorPosition
+} from "../../../index.jsx";
 import ConnectWalletPopupButton from "../connect-wallet-popup-button/component.jsx";
 import userAPI from "../../scripts/user-api.js";
-import {getCursorPosition, blogPath, cryptoPath, homePath, profilePath, questsPath} from "../../../index.jsx";
-import {formatWalletAddress} from "../../scripts/utils.js"
+import cookies from "../../scripts/utils/cookies-helper.js";
+import {formatWalletAddress} from "../../scripts/utils/formatters.js"
 
 import "./css/header.css";
 
@@ -176,16 +179,9 @@ const ProfileData = () => {
 
     const handleWalletConnect = async (accessToken) => {
         if (accessToken) {
-            Cookies.set(
-                'access_token',
-                accessToken,
-                {expires: 7}
-            );
+            cookies.accessToken.set(accessToken);
             userAPI.getUser(accessToken)
-                .then(userAccount => {
-                    setUserAccount(userAccount);
-                    window.location.reload();
-                })
+                .then(userAccount => setUserAccount(userAccount));
         }
     };
 
@@ -217,16 +213,15 @@ const ProfileData = () => {
     };
 
     const handleLogoutButton = () => {
-        const accessToken = Cookies.get('access_token');
-        if (accessToken) {
+        cookies.accessToken.use(accessToken => {
             userAPI.deactivateToken(accessToken)
                 .then(() => {
-                    Cookies.remove('access_token');
+                    cookies.accessToken.remove();
                     setUserAccount(null);
                     setProfileExpanded(false);
                     window.location.reload();
                 });
-        }
+        });
     };
 
     useEffect(() => {
@@ -240,25 +235,26 @@ const ProfileData = () => {
 
     useEffect(() => {
         setUserAccountLoading(true);
-        const accessToken = Cookies.get('access_token');
-        if (accessToken) {
-            userAPI.getUser(accessToken)
-                .then(user => {
-                    if (user['id']) {
-                        setUserAccount(user);
-                    } else {
+        cookies.accessToken.use(accessToken => {
+                userAPI.getUser(accessToken)
+                    .then(user => {
+                        if (user['id']) {
+                            setUserAccount(user);
+                        } else {
+                            setUserAccount(null);
+                        }
+                        setUserAccountLoading(false);
+                    })
+                    .catch(() => {
                         setUserAccount(null);
-                    }
-                    setUserAccountLoading(false);
-                })
-                .catch(() => {
-                    setUserAccount(null);
-                    setUserAccountLoading(false);
-                });
-        } else {
-            setUserAccount(null);
-            setUserAccountLoading(false);
-        }
+                        setUserAccountLoading(false);
+                    });
+            },
+            () => {
+                setUserAccount(null);
+                setUserAccountLoading(false);
+            }
+        );
     }, []);
 
     if (!userAccountLoading) {
@@ -454,12 +450,8 @@ const DocsCounter = ({userAccount}) => {
         setDocsDropdownVisible(false);
     }
 
-    const updateDocsStatus = (accessToken = null) => {
-        if (!accessToken) {
-            accessToken = Cookies.get('access_token');
-        }
-
-        if (accessToken) {
+    const updateDocsStatus = () => {
+        cookies.accessToken.use(accessToken => {
             userAPI.checkDocsStatus(accessToken)
                 .then(docs => {
                     setDocsStatus(docs);
@@ -469,18 +461,18 @@ const DocsCounter = ({userAccount}) => {
                         setGrabDocsButtonHasTimer(true);
                     }
                 })
-        }
+        });
     }
 
     const handleGrabDocsButton = () => {
         setGrabDocsButtonDisabled(true);
-        const accessToken = Cookies.get('access_token');
-        if (accessToken) {
-            userAPI.grabDocs(accessToken).then(response => {
-                setDocsStatus(response);
-                setGrabDocsButtonHasTimer(true);
-            })
-        }
+        cookies.accessToken.use(accessToken => {
+            userAPI.grabDocs(accessToken)
+                .then(response => {
+                    setDocsStatus(response);
+                    setGrabDocsButtonHasTimer(true);
+                })
+        });
     }
 
     const handleTimerFinish = () => {
@@ -488,13 +480,11 @@ const DocsCounter = ({userAccount}) => {
         setGrabDocsButtonDisabled(false);
     }
 
-    useEffect(() => {
-        updateDocsStatus();
-    }, []);
+    useEffect(() => updateDocsStatus(), []);
 
     useEffect(() => {
         let counterSource;
-        if (docsStatus && docsStatus['curr_docs_streak']) {
+        if (docsStatus?.curr_docs_streak) {
             counterSource = docsStatus;
         } else {
             counterSource = userAccount;

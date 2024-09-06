@@ -11,7 +11,7 @@ import PopupMenu from "../../global/components/popup-menu/component.jsx";
 import coinStatsAPI from "../scripts/crypto-api.js";
 import CurrencyFormat from "../scripts/currency-format.js";
 import {arrowDirection, positivePercentage, widgetColor} from '../scripts/utils.js';
-import {unixTimesptampToTime} from '../../global/scripts/utils.js';
+import {timeFromTimestamp} from '../../global/scripts/utils/formatters.js';
 
 import '../css/coin_view.css';
 
@@ -179,7 +179,7 @@ const PriceChart = ({rawData}) => {
 
     for (const i in rawData) {
         const chartPoint = rawData[i];
-        chartTimePoints.push(unixTimesptampToTime(chartPoint[0]));
+        chartTimePoints.push(timeFromTimestamp(chartPoint[0]));
         chartPricePoints.push(chartPoint[1]);
     }
 
