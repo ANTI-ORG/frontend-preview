@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import {profilePath} from "../index.jsx";
 import userAPI from "../global/scripts/user-api";
 import RenderContent from "./components/quests-content.jsx";
+import {cryptoPath} from "../index.jsx";
 
 import "../../node_modules/swiper/swiper-bundle.min.css";
 import "../../node_modules/swiper/swiper.min.css";
@@ -61,7 +62,9 @@ class Quests extends Component {
             selectedChains: [],
             selectedCommunities: [],
             userAccount: null,
+            showAllQuests: false
         };
+        this.handleShowAllQuestsClick = this.handleShowAllQuestsClick.bind(this);
     }
 
     async componentDidMount() {
@@ -70,6 +73,11 @@ class Quests extends Component {
             const userAccount = await userAPI.getUser(accessToken);
             this.setState({userAccount});
         }
+    }
+
+    handleShowAllQuestsClick() {
+        // При клике скрываем кнопку и отображаем все квесты
+        this.setState({ showAllQuests: true });
     }
 
     handleInputChange = (event) => {
@@ -510,6 +518,20 @@ class Quests extends Component {
         );
     }
 
+    renderShowAllQuestsButton() {
+        if (!this.state.showAllQuests) {
+            return (
+                <Link to={`${cryptoPath}`} rel="noopener noreferrer"
+                    className="showAllQuestsButton"
+                    onClick={this.handleShowAllQuestsClick}
+                >
+                    Show All Quests
+                </Link>
+            );
+        }
+        return null;
+    }
+
     renderSidebarProgressXP() {
         const {userAccount} = this.state
         if (userAccount) {
@@ -551,6 +573,7 @@ class Quests extends Component {
                     <div className='quest-filter-container'>
                         {this.renderSearchBar()}
                         {this.renderSidebarFilters()}
+                        {this.renderShowAllQuestsButton()}
                         {this.state.userAccount ? (<p className='MyProgressLabel'>My Progress</p>) : null}
                         {this.renderSidebarProgressXP()}
                     </div>

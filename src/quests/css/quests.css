@@ -222,14 +222,25 @@ select {
   justify-content:flex-start;
 }
 
-.status-tile:hover,
+.status-tile * {
+  cursor: var(--pointer);
+}
+
+.status-tile:hover {
+  background-color: #428649;
+}
+
 .chain-tile:hover {
-  background-color: #2a2a2a;
+  background-color: #505050;
 }
 
 .status-tile.selected,
 .chain-tile.selected {
-  background-color: #2a2a2a;
+  background-color: #06C519;
+}
+
+.chain-tile * {
+  cursor: var(--pointer);
 }
 
 .status-tile img {
@@ -273,6 +284,19 @@ select {
   height: 210px;
   overflow-y: scroll;
   padding-right: 5px;
+}
+
+.showAllQuestsButton {
+  display: flex;
+  margin-top: 10px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  width: 340px;
+  height: 40px;
+  border: 2px solid #ffffff;
+  font-family: "Pixel Operator Mono HB", sans-serif;
+  font-size: 20px;
 }
 
 
