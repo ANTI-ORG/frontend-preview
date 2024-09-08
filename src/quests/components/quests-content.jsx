@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import {Pagination, Navigation, Autoplay} from 'swiper/modules';
 import SwiperCore from 'swiper';
 import {questsPath} from "../../index.jsx";
+import {cryptoPath} from "../../index.jsx";
 
 //Services pics
 import arrow from '../assets/images/services-pics/arrow.png';
@@ -52,6 +53,7 @@ class RenderContent extends Component {
             isNextButtonDisabledSprints: false,
             isPrevButtonDisabledNFT: true,
             isNextButtonDisabledNFT: false,
+            showAllQuests: false
         };
         this.handlePrev = this.handlePrev.bind(this);
         this.handleNext = this.handleNext.bind(this);
@@ -61,6 +63,12 @@ class RenderContent extends Component {
         this.handleNextSprints = this.handleNextSprints.bind(this);
         this.handlePrevNFT = this.handlePrevNFT.bind(this);
         this.handleNextNFT = this.handleNextNFT.bind(this);
+        this.handleShowAllQuestsClick = this.handleShowAllQuestsClick.bind(this);
+    }
+
+    handleShowAllQuestsClick() {
+        // При клике скрываем кнопку и отображаем все квесты
+        this.setState({ showAllQuests: true });
     }
 
     updateButtonStates(swiper) {
@@ -654,6 +662,14 @@ class RenderContent extends Component {
                 >
                     <img src={arrow} alt="Next"/>
                 </div>
+            </div>
+            <div className="show-all-quests-button-content">
+                <Link to={`${cryptoPath}`} rel="noopener noreferrer"
+                        className="showAllQuestsButtonContent"
+                        onClick={this.handleShowAllQuestsClick}
+                    >
+                        Show All Quests
+                </Link>
             </div>
         </div>
     );

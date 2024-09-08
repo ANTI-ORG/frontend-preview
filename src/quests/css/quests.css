@@ -299,6 +299,9 @@ select {
   font-size: 20px;
 }
 
+.showAllQuestsButton:hover {
+  filter: blur(1px);
+}
 
 .MyProgressLabel {
   padding: 10px 0;
@@ -319,6 +322,10 @@ select {
   width: 100%;
   max-width: 300px;
   text-decoration: none;
+}
+
+.sidebarProgressXP:hover {
+  filter: blur(1px);
 }
 
 .quest-pentagon-container {
