@@ -550,8 +550,8 @@ class Quests extends Component {
                     </div>
                     <div className='sidebarProgressXP-score-points'>
                         <div className='sidebarProgressXP-score-points-text'>
-                            <p>Collected {expPoints} exp</p>
-                            <p>Complete quests and get exp</p>
+                            <p>Collected {expPoints} ex</p>
+                            <p>{1000 - expPoints} xp needed for next level</p>
                         </div>
                     </div>
                     <div className='sidebarProgressXP-score-points-arrowNext'>
