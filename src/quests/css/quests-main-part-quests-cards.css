@@ -5,6 +5,7 @@
     max-width: 1270px;
     flex-direction: column;
     padding-right: 20px;
+    height: 100%;
 }
 
 /*Welcome slider*/
@@ -68,7 +69,6 @@
 
 .slide {
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     max-height: 500px;
     width: 100%;
@@ -77,11 +77,15 @@
 }
 
 .slide-text {
-    /* display: flex; */
+    display: flex;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     flex-direction: column;
+    padding-left: 15px;
+    padding-right: 10px;
+    padding-bottom: 60px;
+    justify-content: center;
 }
 
 .slide-img {
@@ -104,9 +108,7 @@
 
 .quests-pic-name-company {
     max-width: 100%;
-    /* max-height: 30px; */
-    /* padding-top: 10px;
-    padding-bottom: 5px; */
+    padding-bottom: 5px;
     align-items: center;
     justify-content: flex-start;
     font-size: 24px;
@@ -389,6 +391,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: var(--pointer);
 }
 
 .custom-button-prev {
@@ -437,7 +440,9 @@
     margin-right: auto;
 }
 
-
+.image-ecosystems {
+    padding-bottom: 15px;
+}
 
 @media (max-width: 1700px) {
     .content-section-slider-ecosystems {
@@ -486,6 +491,7 @@
     border: 2px solid #fff;
     max-width: 200px;
     height: 200px;
+    box-sizing: border-box;
     display: flex;
     background-color: #000000;
     justify-content: center; /* Center the contents horizontally */
@@ -558,6 +564,15 @@
     pointer-events: none;
 }
 
+/* Cursor */
+.custom-button-prev *,
+.custom-button-next *,
+.custom-button-prev-ecosystems *,
+.custom-button-next-ecosystems * {
+    cursor: var(--pointer);
+}
+
+
 /* Another quests */
 
 .content-section-text-another {
@@ -570,4 +585,36 @@
     box-sizing: border-box;
     width: 100%;
     padding-right: 35px;
+}
+
+/* Button show all quests */
+
+.show-all-quests-button-content {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    height: 40px;
+    width: 100%;
+    padding-left: 63px;
+    box-sizing: border-box;
+    padding-right: 35px;
+    
+}
+
+.showAllQuestsButtonContent {
+    display: flex;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    border: 2px solid #ffffff;
+    font-family: "Pixel Operator Mono HB", sans-serif;
+    font-size: 24px;
+    max-width: 1100px;
+}
+
+.showAllQuestsButtonContent:hover {
+    /* background-color: #505050; */
+    filter: blur(1px);
 }

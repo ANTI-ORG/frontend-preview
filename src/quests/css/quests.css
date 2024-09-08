@@ -222,14 +222,25 @@ select {
   justify-content:flex-start;
 }
 
-.status-tile:hover,
+.status-tile * {
+  cursor: var(--pointer);
+}
+
+.status-tile:hover {
+  background-color: #428649;
+}
+
 .chain-tile:hover {
-  background-color: #2a2a2a;
+  background-color: #505050;
 }
 
 .status-tile.selected,
 .chain-tile.selected {
-  background-color: #2a2a2a;
+  background-color: #06C519;
+}
+
+.chain-tile * {
+  cursor: var(--pointer);
 }
 
 .status-tile img {
@@ -275,6 +286,22 @@ select {
   padding-right: 5px;
 }
 
+.showAllQuestsButton {
+  display: flex;
+  margin-top: 10px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  width: 340px;
+  height: 40px;
+  border: 2px solid #ffffff;
+  font-family: "Pixel Operator Mono HB", sans-serif;
+  font-size: 20px;
+}
+
+.showAllQuestsButton:hover {
+  filter: blur(1px);
+}
 
 .MyProgressLabel {
   padding: 10px 0;
@@ -295,6 +322,10 @@ select {
   width: 100%;
   max-width: 300px;
   text-decoration: none;
+}
+
+.sidebarProgressXP:hover {
+  filter: blur(1px);
 }
 
 .quest-pentagon-container {
@@ -360,7 +391,6 @@ select {
 
 .sidebarProgressXP-score-points-text p {
   margin: 0;
-  /* line-height: 1.2; */
 }
 
 .sidebarProgressXP-score-points-text p:first-child {
@@ -369,7 +399,7 @@ select {
 }
 
 .sidebarProgressXP-score-points-text p:last-child {
-  font-size: 14px; 
+  font-size: 16px; 
   color: gray;
   padding-top: 5px;
   font-family: "Pixel Operator", sans-serif;
