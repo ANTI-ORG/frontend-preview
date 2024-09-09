@@ -1,4 +1,4 @@
-import {Component, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
 import {homePath} from "../index.jsx";
 import LoadingScreen from "../global/components/loading-screen/component.jsx";

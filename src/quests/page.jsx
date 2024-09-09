@@ -1,11 +1,6 @@
-import {Component, createRef} from "react";
-import {Link} from "react-router-dom";
+import {Component} from "react";
 import SwiperCore from "swiper";
-import {Swiper, SwiperSlide} from "swiper/react";
-import {Autoplay, Pagination, Navigation} from "swiper/modules";
-import Cookies from "js-cookie";
-import {profilePath} from "../index.jsx";
-import userAPI from "../global/scripts/user-api";
+import {Pagination, Navigation} from "swiper/modules";
 import RenderContent from "./components/quests-content.jsx";
 
 import "../../node_modules/swiper/swiper-bundle.min.css";

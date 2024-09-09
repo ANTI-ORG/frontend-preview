@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import PopupMenu from "../popup-menu/component.jsx";
 
 
