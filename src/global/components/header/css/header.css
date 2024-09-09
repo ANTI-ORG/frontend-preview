@@ -173,9 +173,9 @@
 }
 
 .header-data-profile-docs-counter {
+    height: 100%;
     position: relative;
-    padding-bottom: calc((75px - 24px) / 2);
-    transform: translateY(calc((75px - 24px) / 4));
+    padding: calc((75px - 24px) / 2) 0;
 }
 
 .header-data-profile-docs-counter,
@@ -200,7 +200,7 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: calc(75px - (75px - 24px) / 2);
+    top: calc(75px + (75px - 24px) / 2);
     gap: 10px;
 }
 

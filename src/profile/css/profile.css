@@ -27,7 +27,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: var(--profile-main-margin-vertical) 0;
 }
 
 .profile-side-container {
@@ -290,6 +289,7 @@
     width: var(--profile-center-block-width);
     display: flex;
     flex-direction: column;
+    margin: var(--profile-main-margin-vertical) 0;
     gap: 10px;
 }
 
