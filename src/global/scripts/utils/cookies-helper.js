@@ -7,7 +7,18 @@ const cookies = {
         set: (token) => Cookies.set(cookies.accessToken.cookieName, token, {expires: 7}),
         remove: () => Cookies.remove(cookies.accessToken.cookieName),
         check: () => !!cookies.accessToken.get(),
-        use: (ifTrue, ifFalse = () => null) => cookies.accessToken.check() ? ifTrue(cookies.accessToken.get()) : ifFalse(),
+        use: (
+            ifExists,
+            ifNot = () => {}
+        ) => {
+            return cookies.accessToken.check() ? ifExists(cookies.accessToken.get()) : ifNot()
+        },
+        useAsync: async (
+            ifExists,
+            ifNot = async () => {}
+        ) => {
+            return cookies.accessToken.check() ? await ifExists(cookies.accessToken.get()) : await ifNot()
+        }
     }
 };
 
