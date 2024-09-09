@@ -59,17 +59,8 @@ class Quests extends Component {
             query: '',
             selectedStatus: null,
             selectedChains: [],
-            selectedCommunities: [],
-            userAccount: null,
+            selectedCommunities: []
         };
-    }
-
-    async componentDidMount() {
-        const accessToken = Cookies.get('access_token');
-        if (accessToken) {
-            const userAccount = await userAPI.getUser(accessToken);
-            this.setState({userAccount});
-        }
     }
 
     handleInputChange = (event) => {
@@ -510,38 +501,6 @@ class Quests extends Component {
         );
     }
 
-    renderSidebarProgressXP() {
-        const {userAccount} = this.state
-        if (userAccount) {
-            const expPoints = userAccount['experience'];
-            return (
-                <Link
-                    to={profilePath}
-                    className="sidebarProgressXP"
-                >
-                    <div className="quest-pentagon-container">
-                        <div className="quest-pentagon-white">
-                            <div className="quest-pentagon-black">
-                                <div className="quest-grade-number">1</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='sidebarProgressXP-score-points'>
-                        <div className='sidebarProgressXP-score-points-text'>
-                            <p>Collected {expPoints} exp</p>
-                            <p>Complete quests and get exp</p>
-                        </div>
-                    </div>
-                    <div className='sidebarProgressXP-score-points-arrowNext'>
-                        <img src={arrow} alt="Next"/>
-                    </div>
-                </Link>
-            );
-        }
-    }
-
-    
-
     render() {
         return (
             <div className='quests-page'>
@@ -551,8 +510,6 @@ class Quests extends Component {
                     <div className='quest-filter-container'>
                         {this.renderSearchBar()}
                         {this.renderSidebarFilters()}
-                        {this.state.userAccount ? (<p className='MyProgressLabel'>My Progress</p>) : null}
-                        {this.renderSidebarProgressXP()}
                     </div>
                 </div>
             </div>
