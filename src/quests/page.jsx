@@ -1,11 +1,8 @@
-import {Component, createRef} from "react";
+import {Component} from "react";
 import {Link} from "react-router-dom";
 import SwiperCore from "swiper";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, Pagination, Navigation} from "swiper/modules";
-import Cookies from "js-cookie";
-import {profilePath} from "../index.jsx";
-import userAPI from "../global/scripts/user-api";
 import RenderContent from "./components/quests-content.jsx";
 import {cryptoPath} from "../index.jsx";
 
@@ -61,18 +58,9 @@ class Quests extends Component {
             selectedStatus: null,
             selectedChains: [],
             selectedCommunities: [],
-            userAccount: null,
             showAllQuests: false
         };
         this.handleShowAllQuestsClick = this.handleShowAllQuestsClick.bind(this);
-    }
-
-    async componentDidMount() {
-        const accessToken = Cookies.get('access_token');
-        if (accessToken) {
-            const userAccount = await userAPI.getUser(accessToken);
-            this.setState({userAccount});
-        }
     }
 
     handleShowAllQuestsClick() {
@@ -521,7 +509,7 @@ class Quests extends Component {
     renderShowAllQuestsButton() {
         if (!this.state.showAllQuests) {
             return (
-                <Link to={`${cryptoPath}`} rel="noopener noreferrer"
+                <Link to={cryptoPath} rel="noopener noreferrer"
                     className="showAllQuestsButton"
                     onClick={this.handleShowAllQuestsClick}
                 >
@@ -531,38 +519,6 @@ class Quests extends Component {
         }
         return null;
     }
-
-    renderSidebarProgressXP() {
-        const {userAccount} = this.state
-        if (userAccount) {
-            const expPoints = userAccount['experience'];
-            return (
-                <Link
-                    to={profilePath}
-                    className="sidebarProgressXP"
-                >
-                    <div className="quest-pentagon-container">
-                        <div className="quest-pentagon-white">
-                            <div className="quest-pentagon-black">
-                                <div className="quest-grade-number">1</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='sidebarProgressXP-score-points'>
-                        <div className='sidebarProgressXP-score-points-text'>
-                            <p>Collected {expPoints} ex</p>
-                            <p>{1000 - expPoints} xp needed for next level</p>
-                        </div>
-                    </div>
-                    <div className='sidebarProgressXP-score-points-arrowNext'>
-                        <img src={arrow} alt="Next"/>
-                    </div>
-                </Link>
-            );
-        }
-    }
-
-    
 
     render() {
         return (
@@ -574,8 +530,6 @@ class Quests extends Component {
                         {this.renderSearchBar()}
                         {this.renderSidebarFilters()}
                         {this.renderShowAllQuestsButton()}
-                        {this.state.userAccount ? (<p className='MyProgressLabel'>My Progress</p>) : null}
-                        {this.renderSidebarProgressXP()}
                     </div>
                 </div>
             </div>

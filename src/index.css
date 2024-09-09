@@ -89,6 +89,7 @@ img {
     border: none;
     color: var(--black);
     font-family: "Pixel Operator HB SC", sans-serif;
+    font-size: 20pt;
     width: max-content;
     height: fit-content;
 }

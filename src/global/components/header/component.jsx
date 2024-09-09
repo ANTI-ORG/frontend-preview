@@ -7,7 +7,7 @@ import {
 import ConnectWalletPopupButton from "../connect-wallet-popup-button/component.jsx";
 import userAPI from "../../scripts/user-api.js";
 import cookies from "../../scripts/utils/cookies-helper.js";
-import {formatWalletAddress} from "../../scripts/utils/formatters.js"
+import {formatUsername, formatWalletAddress} from "../../scripts/utils/formatters.js";
 
 import "./css/header.css";
 
@@ -174,24 +174,16 @@ const LinkItem = ({title, url}) => {
 const ProfileData = () => {
     const containerRef = useRef(null);
     const [profileExpanded, setProfileExpanded] = useState(false);
-    const [userAccount, setUserAccount] = useState(null);
-    const [userAccountLoading, setUserAccountLoading] = useState(true);
+    const {data: userAccount, isLoading: userIsLoading} = userAPI.user.get();
 
     const handleWalletConnect = async (accessToken) => {
         if (accessToken) {
             cookies.accessToken.set(accessToken);
-            userAPI.getUser(accessToken)
-                .then(userAccount => setUserAccount(userAccount));
+            window.location.reload();
         }
     };
 
-    const accountLoaded = (userAccount) => {
-        if (!userAccount) {
-            return false;
-        } else if (userAccount && userAccount['id']) {
-            return true;
-        }
-    };
+    const accountLoaded = (userAccount) => !!userAccount?.id;
 
     const preventEvents = (event) => {
         event.preventDefault();
@@ -213,15 +205,11 @@ const ProfileData = () => {
     };
 
     const handleLogoutButton = () => {
-        cookies.accessToken.use(accessToken => {
-            userAPI.deactivateToken(accessToken)
-                .then(() => {
-                    cookies.accessToken.remove();
-                    setUserAccount(null);
-                    setProfileExpanded(false);
-                    window.location.reload();
-                });
-        });
+        userAPI.auth.deactivateToken()
+            .then(() => {
+                cookies.accessToken.remove();
+                window.location.reload();
+            });
     };
 
     useEffect(() => {
@@ -233,31 +221,7 @@ const ProfileData = () => {
         };
     });
 
-    useEffect(() => {
-        setUserAccountLoading(true);
-        cookies.accessToken.use(accessToken => {
-                userAPI.getUser(accessToken)
-                    .then(user => {
-                        if (user['id']) {
-                            setUserAccount(user);
-                        } else {
-                            setUserAccount(null);
-                        }
-                        setUserAccountLoading(false);
-                    })
-                    .catch(() => {
-                        setUserAccount(null);
-                        setUserAccountLoading(false);
-                    });
-            },
-            () => {
-                setUserAccount(null);
-                setUserAccountLoading(false);
-            }
-        );
-    }, []);
-
-    if (!userAccountLoading) {
+    if (!userIsLoading) {
         let userAvatar = null;
         let userAddress = null;
         let username = null;
@@ -284,7 +248,7 @@ const ProfileData = () => {
                             <div className={`header-data-profile-info`}>
                                 {profileExpanded ? (
                                     <div className={`header-data-profile-info-text-container`}>
-                                        <h1>{formatWalletAddress(username)}</h1>
+                                        <h1>{formatUsername(username)}</h1>
                                         <h2>{formatWalletAddress(userAddress)}</h2>
                                     </div>
                                 ) : null}
@@ -380,9 +344,10 @@ const PingWidget = () => {
     }
 };
 
-const Timer = ({grabTime, onFinish}) => {
+const Timer = ({grabTime, onFinish = () => {}}) => {
     const {hours, minutes, seconds} = grabTime;
-    const [time, setTime] = useState({hours, minutes, seconds});
+    const initialTime = useRef({hours, minutes, seconds});
+    const [time, setTime] = useState(initialTime.current);
 
     useEffect(() => {
         let timer;
@@ -416,132 +381,101 @@ const Timer = ({grabTime, onFinish}) => {
         });
     };
 
-    const formatTime = () => {
-        const {hours, minutes, seconds} = time;
-        const formatNumber = (num) => String(num).padStart(2, '0');
-        return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)}`;
-    };
-
-    return formatTime();
+    return null;
 };
 
 const DocsCounter = ({userAccount}) => {
     const grabDocsButtonStates = {
         default: 'Grab docs',
         disabled: '...',
-    }
+    };
 
-    const [currDocsCounter, setCurrDocsCounter] = useState(0);
-    const [maxDocsCounter, setMaxDocsCounter] = useState(0);
     const [docsCounterHovered, setDocsCounterHovered] = useState(false);
     const [docsDropdownVisible, setDocsDropdownVisible] = useState(false);
-    const [docsStatus, setDocsStatus] = useState(null);
-    const [grabDocsButtonDisabled, setGrabDocsButtonDisabled] = useState(true);
-    const [grabDocsButtonHasTimer, setGrabDocsButtonHasTimer] = useState(false);
+    const [grabDocsButtonForceDisabled, setGrabDocsButtonForceDisabled] = useState(false);
 
+    const [docsInfo, setDocsInfo] = useState(userAccount);
+    let docsStatus = userAPI.docs.checkStatus();
 
     const handlePointerEnter = () => {
-        setDocsCounterHovered(true)
+        setDocsCounterHovered(true);
         setDocsDropdownVisible(true);
-    }
+    };
 
     const handlePointerLeave = () => {
-        setDocsCounterHovered(false)
+        setDocsCounterHovered(false);
         setDocsDropdownVisible(false);
-    }
-
-    const updateDocsStatus = () => {
-        cookies.accessToken.use(accessToken => {
-            userAPI.checkDocsStatus(accessToken)
-                .then(docs => {
-                    setDocsStatus(docs);
-                    if (docs['can_grab']) {
-                        setGrabDocsButtonDisabled(false);
-                    } else if (!docs['can_grab']) {
-                        setGrabDocsButtonHasTimer(true);
-                    }
-                })
-        });
-    }
+    };
 
     const handleGrabDocsButton = () => {
-        setGrabDocsButtonDisabled(true);
-        cookies.accessToken.use(accessToken => {
-            userAPI.grabDocs(accessToken)
-                .then(response => {
-                    setDocsStatus(response);
-                    setGrabDocsButtonHasTimer(true);
-                })
-        });
-    }
+        setGrabDocsButtonForceDisabled(true);
+        userAPI.docs.grab()
+            .then(response => {
+                setDocsInfo(response);
+                docsStatus = {
+                    data: response,
+                    isLoading: false,
+                };
+                setGrabDocsButtonForceDisabled(false);
+            })
+    };
 
-    const handleTimerFinish = () => {
-        setGrabDocsButtonHasTimer(false);
-        setGrabDocsButtonDisabled(false);
-    }
+    if (!!docsInfo && !docsStatus.isLoading) {
+        const currDocsStreak = docsInfo['curr_docs_streak'];
+        const maxDocsStreak = docsInfo['max_docs_streak'];
 
-    useEffect(() => updateDocsStatus(), []);
+        const grabDocsButtonDisabled = docsStatus.isLoading;
+        const grabDocsButtonHasTimer = !docsStatus?.data['can_grab'];
 
-    useEffect(() => {
-        let counterSource;
-        if (docsStatus?.curr_docs_streak) {
-            counterSource = docsStatus;
-        } else {
-            counterSource = userAccount;
-        }
-        setCurrDocsCounter(counterSource['curr_docs_streak']);
-        setMaxDocsCounter(counterSource['max_docs_streak']);
-    });
+        const isGrabDocsButtonDisabled = () => grabDocsButtonDisabled || grabDocsButtonForceDisabled;
 
-    return (
-        <div
-            className={`header-data-profile-docs-counter`}
-            onPointerEnter={handlePointerEnter}
-            onPointerLeave={handlePointerLeave}
-        >
-            <img
-                src={docs_icon}
-                alt={`docs counter icon`}
-            />
-            <h1>{currDocsCounter}</h1>
+        return (
+            <div
+                className={`header-data-profile-docs-counter`}
+                onPointerEnter={handlePointerEnter}
+                onPointerLeave={handlePointerLeave}
+            >
+                <img
+                    src={docs_icon}
+                    alt={`docs icon`}
+                />
+                <h1>{currDocsStreak}</h1>
 
-            {docsCounterHovered || docsDropdownVisible ? (
-                <div
-                    className={`header-data-profile-docs-counter-dropdown`}
-                    onPointerLeave={() => setDocsDropdownVisible(false)}
-                >
-                    <p>Max docs grabbed:</p>
-                    <div className={`header-data-profile-docs-counter-dropdown-max-docs`}>
-                        <img
-                            src={docs_icon}
-                            alt={`docs icon`}
-                        />
-                        <h2>{maxDocsCounter}</h2>
-                    </div>
-                    <button
-                        className={`white-button ${grabDocsButtonDisabled ? 'disabled' : ''}`}
-                        onClick={grabDocsButtonDisabled ? null : handleGrabDocsButton}
+                {docsCounterHovered || docsDropdownVisible ? (
+                    <div
+                        className={`header-data-profile-docs-counter-dropdown`}
+                        onPointerLeave={() => setDocsDropdownVisible(false)}
                     >
-                        {grabDocsButtonHasTimer ? (
-                            <Timer
-                                grabTime={docsStatus['time_left']}
-                                onFinish={handleTimerFinish}
+                        <p>Max docs grabbed:</p>
+                        <div className={`header-data-profile-docs-counter-dropdown-max-docs`}>
+                            <img
+                                src={docs_icon}
+                                alt={`docs icon`}
                             />
-                        ) : (
-                            grabDocsButtonDisabled ?
-                                (grabDocsButtonStates.disabled)
-                                :
-                                (grabDocsButtonStates.default))
-                        }
-                    </button>
-                </div>
-            ) : null}
-        </div>
-    );
+                            <h2>{maxDocsStreak}</h2>
+                        </div>
+                        <button
+                            className={`white-button ${isGrabDocsButtonDisabled() || grabDocsButtonHasTimer ? 'disabled' : ''}`}
+                            onClick={isGrabDocsButtonDisabled() || grabDocsButtonHasTimer ? null : handleGrabDocsButton}
+                        >
+                            {!isGrabDocsButtonDisabled() && grabDocsButtonHasTimer ? (
+                                <Timer grabTime={docsStatus.data['time_left']}/>
+                            ) : (
+                                isGrabDocsButtonDisabled() ?
+                                    (grabDocsButtonStates.disabled)
+                                    :
+                                    (grabDocsButtonStates.default)
+                            )}
+                        </button>
+                    </div>
+                ) : null}
+            </div>
+        );
+    }
 };
 
 const ProfileButton = ({title, img_src, onClick, alt}) => {
-    const link = useLocation().pathname
+    const link = useLocation().pathname;
     let linkTo;
     if (typeof onClick === 'string') {
         linkTo = onClick;

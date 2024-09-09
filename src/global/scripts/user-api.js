@@ -1,283 +1,216 @@
-const TEST_NEW_API = false;
+import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
+import cookies from "./utils/cookies-helper.js";
 
 
 class UserAPI {
     base_url = 'https://anti-backend-production.up.railway.app/';
 
-    generatedOptions = (method, acceptOption, body, token) => {
+    nullResponses = {
+        SWR: () => ({data: null, isLoading: false})
+    };
+
+    generatedOptions = (method, acceptOption, token, body) => {
         const acceptOptions = {
             json: 'application/json',
-        }
+            default: 'application/json',
+        };
         const options = {
             method: method,
             headers: {
-                accept: acceptOptions[acceptOption],
-            }
-        }
+                Accept: acceptOptions[acceptOption],
+            },
+        };
         if (token) {
             options.headers['Authorization'] = `Bearer ${token}`;
         }
-        if (body) {
+        if (body && Object.keys(body).length > 0) {
             options.headers['Content-Type'] = 'application/json';
             options.body = JSON.stringify(body);
         }
+
         return options;
-    }
+    };
 
     buildRequest = (args, params) => {
         let url = this.base_url + args.join('/');
-        if (params) {
+        if (params && Object.keys(params).length > 0) {
             url += '?' + new URLSearchParams(params).toString();
         }
         return url;
     };
 
-    getJsonResponse = async (
-        method,
-        acceptOption,
-        token,
-        args,
-        params = null,
-        body = null
+    fetchSWR = (
+        {
+            method,
+            args,
+            acceptOption = 'json',
+            token = null,
+            params = {},
+            body = {},
+            immutable = false,
+            swrOptions = {},
+        }
     ) => {
-        try {
-            const response = await fetch(
-                this.buildRequest(args, params, body),
-                this.generatedOptions(method, acceptOption, body, token)
-            ).then(response => response.json());
-            if (
-                response.status === 400
-                || response.status === 405
-                || response.status === 422
-            ) {
-                return null;
-            }
-            return response;
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            return null;
-        }
-    };
+        const fetcher = ({request, options}) =>
+            fetch(request, options)
+                .then(res => res.json())
+                .catch(() => {
+                    options.Authorization ? cookies.accessToken.remove() : null
+                });
 
-    getOnline = async () => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['users', 'get-online']
-        );
-    }
-
-    generateNonce = async (address) => {
-        return await this.getJsonResponse(
-            'POST',
-            'json',
-            null,
-            ['auth', 'web3', 'generate-nonce'],
-            {address: address}
-        );
-    }
-
-    verifySignature = async (tempToken, signature, type) => {
-        return await this.getJsonResponse(
-            'POST',
-            'json',
-            null,
-            ['auth', 'web3', 'verify-signature'],
-            {type: type},
+        const swrHook = immutable ? useSWRImmutable : useSWR;
+        return swrHook(
             {
-                temp_token: tempToken,
-                signature: signature
-            }
+                request: this.buildRequest(args, params),
+                options: this.generatedOptions(method, acceptOption, token, body)
+            },
+            fetcher,
+            swrOptions
         );
-    }
-
-    authIsValid = async (token) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            token,
-            ['auth', 'web3', 'is-valid']
-        );
-    }
-
-    deactivateToken = async (token) => {
-        return await this.getJsonResponse(
-            'DELETE',
-            'json',
-            token,
-            ['auth', 'web3', 'deactivate']
-        );
-    }
-
-    getUser = async (token) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            token,
-            ['user']
-        );
-    }
-
-    updateUser = async (token, userData) => {
-        return await this.getJsonResponse(
-            'PATCH',
-            'json',
-            token,
-            ['user'],
-            userData
-        );
-    }
-
-    grabDocs = async (token) => {
-        return await this.getJsonResponse(
-            'PATCH',
-            'json',
-            token,
-            ['docs', 'grab']
-        );
-    }
-
-    checkDocsStatus = async (token) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            token,
-            ['docs', 'check-status']
-        );
-    }
-
-    getQuests = async () => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['quests']
-        );
-    }
-
-    getQuest = async (questId) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['quest', questId]
-        );
-    }
-
-    getChains = async () => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['chains']
-        );
-    }
-
-    getChain = async (chainId) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['chain', chainId]
-        );
-    }
-
-    getProjects = async () => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['projects']
-        );
-    }
-
-    getProject = async (projectId) => {
-        return await this.getJsonResponse(
-            'GET',
-            'json',
-            null,
-            ['project', projectId]
-        );
-    }
-}
-
-class UserAPIBeta {
-    base_url = 'https://anti-backend-production.up.railway.app/';
-
-    generatedOptions = (method, acceptOption, body, token, noCors) => {
-        const acceptOptions = {
-            json: 'application/json',
-        }
-        const options = {
-            method: method,
-        }
-        if (!noCors) {
-            options.headers['Accept'] = acceptOptions[acceptOption];
-            if (token) {
-                options.headers['Authorization'] = `Bearer ${token}`;
-            }
-            if (body) {
-                options.headers['Content-Type'] = 'application/json';
-                options.body = JSON.stringify(body);
-            }
-        } else {
-            options.mode = 'no-cors';
-        }
-        return options;
-    }
-
-    buildRequest = (args, params) => {
-        let url = this.base_url + args.join('/');
-        if (params) {
-            url += '?' + new URLSearchParams(params).toString();
-        }
-        return url;
     };
 
-    getJsonResponse = async (
-        method,
-        acceptOption,
-        token,
-        args,
-        params = null,
-        body = null,
-        noCors = false
+    fetchAsync = async (
+        {
+            method,
+            args,
+            acceptOption = 'json',
+            token = null,
+            params = {},
+            body = {},
+        }
     ) => {
         return await fetch(
-            this.buildRequest(args, params, body),
-            this.generatedOptions(method, acceptOption, body, token, noCors)
+            this.buildRequest(args, params),
+            this.generatedOptions(method, acceptOption, token, body)
         )
-            .then(response => response.json())
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                return null;
-            });
+            .then(res => acceptOption === 'json' ? res.json() : () => {});
     };
 
-    pingServer = async () => {
-        return await this.getJsonResponse(
-            'HEAD',
-            'json',
-            null,
-            null,
-            null,
-            null,
-            true
-        );
-    }
+    users = {
+        getOnline: () =>
+            this.fetchSWR({
+                method: 'GET',
+                args: ['users', 'get-online'],
+                swrOptions: {refreshInterval: 5000}
+            })
+    };
 
-    apiContainer = {
-        slots: {
+    auth = {
+        generateNonce: async (address) =>
+            await this.fetchAsync({
+                method: 'POST',
+                args: ['auth', 'web3', 'generate-nonce'],
+                params: {address: address},
+            }),
+        verifySignature: async (tempToken, signature, type) =>
+            await this.fetchAsync({
+                method: 'POST',
+                args: ['auth', 'web3', 'verify-signature'],
+                params: {type: type},
+                body: {
+                    temp_token: tempToken,
+                    signature: signature
+                },
+            }),
+        isValid: async () =>
+            cookies.accessToken.useAsync(async token =>
+                await this.fetchAsync({
+                    method: 'GET',
+                    args: ['auth', 'web3', 'is-valid'],
+                    token: token,
+                })
+            ),
+        deactivateToken: async () =>
+            cookies.accessToken.useAsync(async token =>
+                await this.fetchAsync({
+                    method: 'DELETE',
+                    args: ['auth', 'web3', 'deactivate'],
+                    acceptOption: '',
+                    token: token,
+                })
+            )
+    };
 
-        },
-        updateSlot: (name) => {
-            self[name].contentOrigin()
-            self[name].updateTime = Date.now()
+    user = {
+        get: () =>
+            cookies.accessToken.use(token => {
+                    return this.fetchSWR({
+                        method: 'GET',
+                        args: ['user'],
+                        token: token,
+                        swrOptions: {refreshInterval: 30000}
+                    });
+                },
+                this.nullResponses.SWR
+            ),
+        patch: async (userData) =>
+            cookies.accessToken.useAsync(async token =>
+                await this.fetchAsync({
+                    method: 'PATCH',
+                    args: ['user'],
+                    token: token,
+                    body: userData,
+                })
+            )
+    };
+
+    docs = {
+        grab: async () =>
+            cookies.accessToken.useAsync(async token =>
+                await this.fetchAsync({
+                    method: 'PATCH',
+                    args: ['docs', 'grab'],
+                    token: token,
+                })
+            ),
+        checkStatus: () =>
+            cookies.accessToken.use(token => {
+                    return this.fetchSWR({
+                        method: 'GET',
+                        args: ['docs', 'check-status'],
+                        token: token,
+                        immutable: true
+                    });
+                },
+                this.nullResponses.SWR
+            )
+    };
+
+    quests = {
+        get: (questId = null) => {
+            const args = !!questId ? ['quests', questId] : ['quests'];
+            return this.fetchSWR({
+                method: 'GET',
+                args: args,
+                immutable: true
+            });
+        }
+    };
+
+    chains = {
+        get: (chainId = null) => {
+            const args = !!chainId ? ['chains', chainId] : ['chains'];
+            return this.fetchSWR({
+                method: 'GET',
+                args: args,
+                immutable: true
+            });
+        }
+    };
+
+    projects = {
+        get: (projectId = null) => {
+            const args = !!projectId ? ['projects', projectId] : ['projects'];
+            return this.fetchSWR({
+                method: 'GET',
+                args: args,
+                immutable: true
+            });
         }
     };
 }
 
-let userAPI = TEST_NEW_API ? new UserAPIBeta() : new UserAPI();
+let userAPI = new UserAPI();
 
 export default userAPI;

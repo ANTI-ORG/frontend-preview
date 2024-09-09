@@ -1,6 +1,5 @@
-import {Component, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Navigate} from "react-router-dom";
-import Cookies from "js-cookie";
 import {homePath} from "../index.jsx";
 import LoadingScreen from "../global/components/loading-screen/component.jsx";
 import SettingsPopup from "../global/components/settings-popup/component.jsx";
@@ -8,6 +7,7 @@ import QuestCard from "../global/components/quest-card/component.jsx";
 import ProgressBar from "../global/components/progress-bar/component.jsx";
 import Pentagon, {countPentagonWidth} from "../global/components/pentagon/component.jsx";
 import userAPI from "../global/scripts/user-api.js";
+import cookies from "../global/scripts/utils/cookies-helper.js";
 import {formatUsername, formatWalletAddress, timeFromDatetime} from "../global/scripts/utils/formatters.js";
 import {percentageToColor} from "../global/scripts/utils/color-helper.js";
 
@@ -21,43 +21,32 @@ import company1CardPic from "../quests/assets/images/company-pics/company-1-card
 import chain1ChainPic from "../quests/assets/images/chains-pics/op-chain.png";
 
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {userAccount: null};
+const Profile = () => {
+    const {data: userAccount, isLoading: userAccountIsLoading} = userAPI.user.get();
+
+    if (!cookies.accessToken.check()) {
+        return <Navigate to={homePath}/>;
     }
 
-    render() {
-        const accessToken = Cookies.get('access_token');
-        if (!accessToken) {
-            return <Navigate to={homePath}/>;
-        } else {
-            userAPI.getUser(accessToken)
-                .then(userAccount => {
-                    this.setState({userAccount})
-                });
-            const {userAccount} = this.state;
-            if (!userAccount) {
-                return <LoadingScreen/>;
-            } else {
-                return (
-                    <>
-                        <div className={`profile-side-container left`}>
-                            <IDCard userAccount={userAccount}/>
-                            <SeasonPass userAccount={userAccount}/>
-                        </div>
-                        <div className={`profile-center-container`}>
-                            <Quests userAccount={userAccount}/>
-                        </div>
-                        <div className={`profile-side-container right`}>
-                            <Achievements userAccount={userAccount}/>
-                        </div>
-                    </>
-                );
-            }
-        }
+    if (userAccountIsLoading) {
+        return <LoadingScreen/>;
+    } else {
+        return (
+            <>
+                <div className={`profile-side-container left`}>
+                    <IDCard userAccount={userAccount}/>
+                    <SeasonPass userAccount={userAccount}/>
+                </div>
+                <div className={`profile-center-container`}>
+                    <Quests userAccount={userAccount}/>
+                </div>
+                <div className={`profile-side-container right`}>
+                    <Achievements userAccount={userAccount}/>
+                </div>
+            </>
+        );
     }
-}
+};
 
 const ProfileSubtitle = ({className, type = 'big', align = 'center', children}) => {
     const defClassName = 'profile-subtitle-container';

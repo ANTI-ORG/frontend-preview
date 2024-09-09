@@ -4,13 +4,16 @@
 
 
 .connect-wallet-popup-button {
-    font-size: 22pt;
     min-width: 230px;
     min-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 12.5px 20px 0 0;
+}
+
+.white-button.connect-wallet-popup-button {
+    font-size: 22pt;
 }
 
 .connect-wallet-popup-content {

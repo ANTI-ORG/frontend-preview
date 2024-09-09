@@ -25,10 +25,8 @@ const assembleCSSValue = (arr) => {
 };
 
 const sumCSSValues = (value1, value2) => {
-    console.log('Summing CSS values:', value1, value2);
     const value1Split = splitCSSValue(value1);
     const value2Split = splitCSSValue(value2);
-    console.log('Split values:', value1Split, value2Split);
 
     if (
         (value1Split[0] === 0 && value1Split[1] === '')
