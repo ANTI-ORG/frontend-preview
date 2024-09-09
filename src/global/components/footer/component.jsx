@@ -1,12 +1,12 @@
-import {useState, useEffect} from 'react';
 import {Link, useLocation, useParams} from "react-router-dom";
-import userAPI from "../../../global/scripts/user-api.js"
-import './css/footer.css';
 import {
     page404Path, cryptoPath, questsPath, blogPath, profilePath,
     questsParams
-} from '../../../index.jsx'
-import {TelegramSvg, XSvg, DiscordSvg, MailSvg, SupportSvg, UserSvg} from './assets/images/svg/svg_items.jsx'
+} from "../../../index.jsx";
+import userAPI from "../../../global/scripts/user-api.js";
+import {TelegramSvg, XSvg, DiscordSvg, MailSvg, SupportSvg, UserSvg} from "./assets/images/svg/svg_items.jsx";
+
+import "./css/footer.css";
 
 
 const Footer = () => {
@@ -108,30 +108,14 @@ const Footer = () => {
 }
 
 const TodayUsers = () => {
-    const [todayUsers, setTodayUsers] = useState(0);
-
-    const updateOnline = () => {
-        userAPI.getOnline()
-            .then(response => {
-                setTodayUsers(response['count'])
-            })
-    }
-
-    useEffect(() => {
-        const interval = setInterval(updateOnline, 5000);
-        return () => clearInterval(interval);
-    })
-
-    useEffect(() => {
-        updateOnline()
-    },[])
+    const {data: todayUsers, isLoading} = userAPI.users.getOnline();
 
     return (
         <div className={'footer-today-users-container'}>
             <p>DAILY ONLINE</p>
             <div className={'footer-social-links footer-user-link'}>
                 <UserSvg/>
-                <span className="today-users-text">{todayUsers}</span>
+                <span className="today-users-text">{isLoading ? '?' : todayUsers['count']}</span>
             </div>
         </div>
     );
