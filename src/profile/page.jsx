@@ -24,7 +24,7 @@ import chain1ChainPic from "../quests/assets/images/chains-pics/op-chain.png";
 const Profile = () => {
     const {data: userAccount, isLoading: userAccountIsLoading} = userAPI.user.get();
 
-    if (!cookies.accessToken.check()) {
+    if (!cookies.accessToken.checkIsValid()) {
         return <Navigate to={homePath}/>;
     }
 

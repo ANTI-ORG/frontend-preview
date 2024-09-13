@@ -1,25 +1,39 @@
 import Cookies from "js-cookie";
 
-const cookies = {
-    accessToken: {
-        cookieName: 'access_token',
-        get: () => Cookies.get(cookies.accessToken.cookieName),
-        set: (token) => Cookies.set(cookies.accessToken.cookieName, token, {expires: 7}),
-        remove: () => Cookies.remove(cookies.accessToken.cookieName),
-        check: () => !!cookies.accessToken.get(),
-        use: (
-            ifExists,
-            ifNot = () => {}
-        ) => {
-            return cookies.accessToken.check() ? ifExists(cookies.accessToken.get()) : ifNot()
-        },
-        useAsync: async (
-            ifExists,
-            ifNot = async () => {}
-        ) => {
-            return cookies.accessToken.check() ? await ifExists(cookies.accessToken.get()) : await ifNot()
-        }
+
+class Cookie {
+    constructor(name, expires = -1) {
+        this.cookieName = name;
+        this.expires = expires;
     }
+
+    set(value) {
+        Cookies.set(this.cookieName, value, {expires: this.expires});
+    }
+
+    get() {
+        return Cookies.get(this.cookieName);
+    }
+
+    remove() {
+        Cookies.remove(this.cookieName);
+    }
+
+    checkIsValid() {
+        return !!this.get();
+    }
+
+    use(ifExists, ifNot = () => {}) {
+        return this.checkIsValid() ? ifExists(this.get()) : ifNot();
+    }
+
+    async useAsync(ifExists, ifNot = async () => {}) {
+        return this.checkIsValid() ? await ifExists(this.get()) : await ifNot()
+    }
+}
+
+const cookies = {
+    accessToken: new Cookie('access_token', 7),
 };
 
 export default cookies;
