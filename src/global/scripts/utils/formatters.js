@@ -19,12 +19,23 @@ const timeFromDatetime = (datetime) => {
     return `${day}.${month}.${year}`;
 };
 
+const timeLeftToDate = (
+    {
+        days = 0,
+        hours = 0,
+        minutes = 0,
+        seconds = 0
+    }
+) => {
+    const totalSeconds = (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
+    return new Date(totalSeconds * 1000);
+}
+
 const formatUsername = (username) => {
     const maxLength = 10;
     if (username.length > maxLength) {
         return `${username.slice(0, maxLength)}...`;
-    }
-    else {
+    } else {
         return username;
     }
 };
@@ -32,13 +43,12 @@ const formatUsername = (username) => {
 const formatWalletAddress = (address) => {
     if (!address) {
         return 'No wallet connected';
-    }
-    else {
+    } else {
         return `${address.slice(0, 5)}...${address.slice(-5)}`;
     }
 };
 
 export {
-    timeFromTimestamp, timeFromDatetime,
+    timeFromTimestamp, timeFromDatetime, timeLeftToDate,
     formatUsername, formatWalletAddress
 };
