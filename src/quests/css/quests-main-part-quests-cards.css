@@ -1,10 +1,10 @@
 .quests-content {
     display: flex; /* Обеспечивает вертикальное расположение "New" и слайдера */
     width: 100%;
-    margin: 0 auto; /* Центрирование всего контейнера */
-    max-width: 1270px;
+    /* margin: 0 auto;  */
+    max-width: 1100px;
     flex-direction: column;
-    padding-right: 20px;
+    padding-right: 45px;
     height: 100%;
 }
 
@@ -147,6 +147,7 @@
     box-sizing: border-box;
     width: 100%;
     padding-right: 35px;
+    align-items: center;
 }
 
 .content-section-text-last-month {
@@ -155,11 +156,15 @@
     max-width: 1100px;
     display: flex;
     padding-bottom: 5px;
+    align-items: center;
 }
 
 .content-section-text-showall {
     display: flex;
     align-items: flex-end;
+    border: 2px solid #fff;
+    height: fit-content;
+    padding: 0 4px;
 }
 
 .content-section-text-showall p {
@@ -171,7 +176,7 @@
 
 .content-section-slider-new {
     width: 100%;
-    max-width: 1230px;
+    max-width: 1000px;
     position: relative;
     display: flex;
     max-height: 404px;
@@ -424,15 +429,21 @@
     font-size: 36px;
     padding-left: 63px;
     font-family: 'Pixel Operator HB 8', sans-serif;
-    height: 55px;
+    height: 40px;
     box-sizing: border-box;
     width: 100%;
     padding-right: 35px;
+    margin-bottom: 5px;
+}
+
+.content-section-text-ecosystems p {
+    margin: 0;
+    height: 40px;
 }
 
 .content-section-slider-ecosystems {
     width: 100%;
-    max-width: 1230px;
+    max-width: 1000px;
     position: relative;
     display: flex;
     max-height: 404px;
@@ -615,6 +626,5 @@
 }
 
 .showAllQuestsButtonContent:hover {
-    /* background-color: #505050; */
-    filter: blur(1px);
+    background-color: #505050;
 }
