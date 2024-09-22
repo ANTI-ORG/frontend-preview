@@ -1,7 +1,7 @@
 .quests-page {
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 25px 65px;
+  padding: 25px 80px 25px 30px;
   flex-wrap: wrap;
 }
 
@@ -141,13 +141,14 @@
   display: flex;
   box-sizing: border-box;
   max-width: 100%;
+  justify-content: center;
 }
 
 .quest-filter-container {
   position:sticky;
-  top: -50px;
+  top: 120px;
   width: 100%;
-  max-width: 340px;
+  max-width: 320px;
   height: 100%;
   margin-top: 58px;
   box-sizing: border-box;
@@ -292,7 +293,7 @@ select {
   box-sizing: border-box;
   justify-content: center;
   align-items: center;
-  width: 340px;
+  width: 320px;
   height: 40px;
   border: 2px solid #ffffff;
   font-family: "Pixel Operator Mono HB", sans-serif;
@@ -300,7 +301,7 @@ select {
 }
 
 .showAllQuestsButton:hover {
-  filter: blur(1px);
+  background-color: #505050;
 }
 
 .MyProgressLabel {

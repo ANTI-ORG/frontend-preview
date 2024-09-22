@@ -39,6 +39,7 @@ SwiperCore.use([Navigation, Pagination]);
 class RenderContent extends Component {
     constructor(props) {
         super(props);
+        this.swiperRefWelcome = createRef();
         this.swiperRef = createRef();
         this.swiperRefEcosystems = createRef();
         this.swiperRefSprints = createRef();
@@ -53,7 +54,8 @@ class RenderContent extends Component {
             isNextButtonDisabledSprints: false,
             isPrevButtonDisabledNFT: true,
             isNextButtonDisabledNFT: false,
-            showAllQuests: false
+            showAllQuests: false,
+            activeSlide: 0,
         };
         this.handlePrev = this.handlePrev.bind(this);
         this.handleNext = this.handleNext.bind(this);
@@ -66,6 +68,12 @@ class RenderContent extends Component {
         this.handleShowAllQuestsClick = this.handleShowAllQuestsClick.bind(this);
     }
 
+    handleIndicatorClick = (index) => {
+        if (this.swiperRefWelcome.current && this.swiperRefWelcome.current.swiper) {
+            this.swiperRefWelcome.current.swiper.slideTo(index);
+            this.setState({ activeSlide: index });
+        }
+    }
     handleShowAllQuestsClick() {
         // При клике скрываем кнопку и отображаем все квесты
         this.setState({ showAllQuests: true });
@@ -208,6 +216,7 @@ class RenderContent extends Component {
             isNextButtonDisabledSprints,
             isPrevButtonDisabledNFT,
             isNextButtonDisabledNFT,
+            activeSlide,
         } = this.state;
 
 
@@ -412,6 +421,30 @@ class RenderContent extends Component {
             companyLogo: company3CardPic,
             link: "https://polkadot.network"
         },
+        {
+            imageSrc: questCard2QuestPic,
+            altText: "Image 3",
+            title: "Polkadot Journey - Earn Staking Rewards",
+            companyName: "Polkadot",
+            companyLogo: company3CardPic,
+            link: "https://polkadot.network"
+        },
+        {
+            imageSrc: questCard2QuestPic,
+            altText: "Image 3",
+            title: "Polkadot Journey - Earn Staking Rewards",
+            companyName: "Polkadot",
+            companyLogo: company3CardPic,
+            link: "https://polkadot.network"
+        },
+        {
+            imageSrc: questCard2QuestPic,
+            altText: "Image 3",
+            title: "Polkadot Journey - Earn Staking Rewards",
+            companyName: "Polkadot",
+            companyLogo: company3CardPic,
+            link: "https://polkadot.network"
+        },
         
     ];
 
@@ -453,11 +486,17 @@ class RenderContent extends Component {
             <div className='welcome-banner-slider'>
                 <div className='slide-indicators'>
                         {slideDataWelcomeBanner.map((_, index) => (
-                            <div key={index} className={`indicator ${this.state.activeSlide === index ? 'active' : ''}`}></div>
+                            <div 
+                                key={index} 
+                                className={`indicator ${this.state.activeSlide === index ? 'active' : ''}`} 
+                                onClick={() => this.handleIndicatorClick(index)}
+                                >
+                            </div>
                         ))}
                 </div>
                 <div className='welcome-banner-slider-swiper'>
                     <Swiper
+                        ref={this.swiperRefWelcome}
                         modules={[Autoplay, Pagination]}
                         spaceBetween={30}
                         centeredSlides={false}
@@ -495,7 +534,7 @@ class RenderContent extends Component {
                         breakpoints={{
                             1700: {
                                 slidesPerView: 3,
-                                spaceBetween: 95,
+                                spaceBetween: 45,
                             },
                             1400: {
                                 slidesPerView: 3,
@@ -540,7 +579,7 @@ class RenderContent extends Component {
                         breakpoints={{
                             1700: {
                                 slidesPerView: 5,
-                                spaceBetween: 20,
+                                spaceBetween: 10,
                             },
                             1400: {
                                 slidesPerView: 5,
@@ -588,7 +627,7 @@ class RenderContent extends Component {
                         breakpoints={{
                             1700: {
                                 slidesPerView: 3,
-                                spaceBetween: 95,
+                                spaceBetween: 45,
                             },
                             1400: {
                                 slidesPerView: 3,
@@ -636,7 +675,7 @@ class RenderContent extends Component {
                         breakpoints={{
                             1700: {
                                 slidesPerView: 3,
-                                spaceBetween: 95,
+                                spaceBetween: 45,
                             },
                             1400: {
                                 slidesPerView: 3,
@@ -663,14 +702,14 @@ class RenderContent extends Component {
                     <img src={arrow} alt="Next"/>
                 </div>
             </div>
-            <div className="show-all-quests-button-content">
+            {/* <div className="show-all-quests-button-content">
                 <Link to={`${cryptoPath}`} rel="noopener noreferrer"
                         className="showAllQuestsButtonContent"
                         onClick={this.handleShowAllQuestsClick}
                     >
                         Show All Quests
                 </Link>
-            </div>
+            </div> */}
         </div>
     );
     };
