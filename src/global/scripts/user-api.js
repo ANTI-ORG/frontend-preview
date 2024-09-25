@@ -56,7 +56,10 @@ class UserAPI {
                     return res.json();
                 }
             });
-        return {request, response};
+        return {
+            request: request,
+            response: response
+        };
     };
 
     fetchWithLocalStorageAsync = async ({
@@ -78,6 +81,10 @@ class UserAPI {
         })
             .then(({request, response}) => {
                 localStorage.setItem(request, response, {expires: validTime});
+                return {
+                    request: request,
+                    response: response
+                };
             });
     }
 

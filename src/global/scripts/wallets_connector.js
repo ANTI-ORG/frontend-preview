@@ -71,7 +71,7 @@ const connectWallet = async (wallet, connectType, onWalletConnect) => {
             console.error(`Не удалось получить ${wallet} аккаунт.`);
         }
 
-        const tempTokenJson = await userAPI.auth.generateNonce(account);
+        const {response: tempTokenJson} = await userAPI.auth.generateNonce(account);
         const tempToken = tempTokenJson['temp_token'];
         const message = jwtDecode(tempToken)['nonce']
         let encodedMessage = null;
@@ -122,7 +122,7 @@ const connectWallet = async (wallet, connectType, onWalletConnect) => {
             outputSignature = btoa(String.fromCharCode(...solanaSignature.signature));
         }
 
-        const accessTokenJson = await userAPI.auth.verifySignature(tempToken, outputSignature, connectType);
+        const {response: accessTokenJson} = await userAPI.auth.verifySignature(tempToken, outputSignature, connectType);
         const accessToken = accessTokenJson['access_token'];
 
         onWalletConnect(accessToken);

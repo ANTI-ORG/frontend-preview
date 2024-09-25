@@ -409,7 +409,7 @@ const DocsCounter = ({userAccount}) => {
     const handleGrabDocsButton = () => {
         setGrabDocsButtonForceDisabled(true);
         userAPI.docs.grab()
-            .then(response => {
+            .then(({response}) => {
                 setDocsInfo(response);
                 docsStatus = {
                     data: response,

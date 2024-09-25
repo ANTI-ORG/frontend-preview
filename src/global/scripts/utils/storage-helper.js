@@ -53,10 +53,11 @@ class Storage {
         }
     }
 
-    getItem(key) {
+    getItem(key, raw = false) {
         if (this.storageExists) {
             try {
-                return JSON.parse(this.storage.getItem(key)).value;
+                const item = JSON.parse(this.storage.getItem(key));
+                return !raw ? item.value : item;
             } catch (error) {
                 console.error(`Error getting item ${key} from storage`, error);
                 this.storage.removeItem(key);
@@ -79,7 +80,7 @@ class Storage {
 
     checkItemIsValid(key) {
         if (this.storageExists) {
-            const item = this.getItem(key);
+            const item = this.getItem(key, true);
             if (item) {
                 if (item.options.hasOwnProperty('expires')) {
                     if (!item.options.expires) {

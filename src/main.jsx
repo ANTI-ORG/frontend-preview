@@ -6,8 +6,8 @@ import cookies from "./global/scripts/utils/cookies-helper.js";
 
 
 userAPI.auth.isValid()
-    .then(data => {
-        if (!!data && !data['is_valid']) {
+    .then(({response}) => {
+        if (response && !response['is_valid']) {
             cookies.accessToken.remove();
         }
     })
