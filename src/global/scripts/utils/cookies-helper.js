@@ -23,12 +23,12 @@ class Cookie {
         return !!this.get();
     }
 
-    use(ifExists, ifNot = () => {}) {
-        return this.checkIsValid() ? ifExists(this.get()) : ifNot();
+    use(onValid, onExpired = () => {}) {
+        return this.checkIsValid() ? onValid(this.get()) : onExpired();
     }
 
-    async useAsync(ifExists, ifNot = async () => {}) {
-        return this.checkIsValid() ? await ifExists(this.get()) : await ifNot()
+    async useAsync(onValid, onExpired = async () => {}) {
+        return this.checkIsValid() ? await onValid(this.get()) : await onExpired()
     }
 }
 

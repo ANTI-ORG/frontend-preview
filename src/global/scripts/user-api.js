@@ -1,13 +1,21 @@
-import useSWR from "swr";
-import useSWRImmutable from "swr/immutable";
+import {useState, useEffect} from "react";
 import cookies from "./utils/cookies-helper.js";
+import {localStorage} from "./utils/storage-helper.js";
+import {timeLeftToMilliseconds} from "./utils/formatters.js";
 
 
 class UserAPI {
     base_url = 'https://anti-backend-production.up.railway.app/';
 
-    nullResponses = {
-        SWR: () => ({data: null, isLoading: false})
+    nullResponse = {data: {}, error: false, isLoading: false};
+
+    buildRequest = (args, params) => {
+        let request = args.join('/');
+        if (params && Object.keys(params).length > 0) {
+            request += '?' + new URLSearchParams(params).toString();
+        }
+        const url = this.base_url + request;
+        return [url, request];
     };
 
     generatedOptions = (method, acceptOption, token, body) => {
@@ -32,125 +40,168 @@ class UserAPI {
         return options;
     };
 
-    buildRequest = (args, params) => {
-        let url = this.base_url + args.join('/');
-        if (params && Object.keys(params).length > 0) {
-            url += '?' + new URLSearchParams(params).toString();
-        }
-        return url;
+    fetchRaw = async ({
+        method,
+        args,
+        params = {},
+        acceptOption = 'json',
+        token = null,
+        body = {},
+    }) => {
+        const [url, request] = this.buildRequest(args, params);
+        const options = this.generatedOptions(method, acceptOption, token, body)
+        const response = await fetch(url, options)
+            .then(res => {
+                if (acceptOption === 'json') {
+                    return res.json();
+                }
+            });
+        return {request, response};
     };
 
-    fetchSWR = (
-        {
-            method,
-            args,
-            acceptOption = 'json',
-            token = null,
-            params = {},
-            body = {},
-            immutable = false,
-            swrOptions = {},
-        }
-    ) => {
-        const fetcher = ({request, options}) =>
-            fetch(request, options)
-                .then(res => res.json())
-                .catch(() => {
-                    options.Authorization ? cookies.accessToken.remove() : null
+    fetchWithLocalStorageAsync = async ({
+        method,
+        args,
+        params = {},
+        acceptOption = 'json',
+        token = null,
+        body = {},
+        validTime = {minutes: 1}
+    }) => {
+        return await this.fetchRaw({
+            method: method,
+            args: args,
+            params: params,
+            acceptOption: acceptOption,
+            token: token,
+            body: body,
+        })
+            .then(({request, response}) => {
+                localStorage.setItem(request, response, {expires: validTime});
+            });
+    }
+
+    fetchWithLocalStorage = ({
+        method,
+        args,
+        params = {},
+        acceptOption = 'json',
+        token = null,
+        body = {},
+        validTime = {minutes: 1}
+    }) => {
+        const [response, setResponse] = useState({});
+        const [error, setError] = useState(false);
+        const [responseIsLoading, setResponseIsLoading] = useState(true);
+
+        const check = () => {
+            setResponseIsLoading(true);
+            localStorage.checkAllItems();
+            const [, request] = this.buildRequest(args, params);
+            if (localStorage.checkItemIsValid(request)) {
+                setResponse(localStorage.getItem(request));
+                setResponseIsLoading(false);
+            } else {
+                update();
+            }
+        };
+
+        const update = () => {
+            setResponseIsLoading(true);
+            this.fetchRaw({
+                method: method,
+                args: args,
+                params: params,
+                acceptOption: acceptOption,
+                token: token,
+                body: body,
+            })
+                .then(({request, response}) => {
+                    setResponse(response);
+                    setResponseIsLoading(false);
+                    localStorage.setItem(request, response, {expires: validTime});
                 });
+        };
 
-        const swrHook = immutable ? useSWRImmutable : useSWR;
-        return swrHook(
-            {
-                request: this.buildRequest(args, params),
-                options: this.generatedOptions(method, acceptOption, token, body)
-            },
-            fetcher,
-            swrOptions
-        );
-    };
+        useEffect(() => check(), [])
 
-    fetchAsync = async (
-        {
-            method,
-            args,
-            acceptOption = 'json',
-            token = null,
-            params = {},
-            body = {},
+        useEffect(() => {
+            const interval = setInterval(update, timeLeftToMilliseconds(validTime));
+            return () => clearInterval(interval);
+        })
+
+        return {
+            data: response,
+            error: error,
+            isLoading: responseIsLoading
         }
-    ) => {
-        return await fetch(
-            this.buildRequest(args, params),
-            this.generatedOptions(method, acceptOption, token, body)
-        )
-            .then(res => acceptOption === 'json' ? res.json() : () => {});
     };
 
     users = {
         getOnline: () =>
-            this.fetchSWR({
+            this.fetchWithLocalStorage({
                 method: 'GET',
                 args: ['users', 'get-online'],
-                swrOptions: {refreshInterval: 5000}
+                validTime: {seconds: 5}
             })
     };
 
     auth = {
         generateNonce: async (address) =>
-            await this.fetchAsync({
+            await this.fetchWithLocalStorageAsync({
                 method: 'POST',
                 args: ['auth', 'web3', 'generate-nonce'],
                 params: {address: address},
+                validTime: {minutes: 1}
             }),
         verifySignature: async (tempToken, signature, type) =>
-            await this.fetchAsync({
+            await this.fetchRaw({
                 method: 'POST',
                 args: ['auth', 'web3', 'verify-signature'],
                 params: {type: type},
                 body: {
                     temp_token: tempToken,
                     signature: signature
-                },
+                }
             }),
         isValid: async () =>
             cookies.accessToken.useAsync(async token =>
-                await this.fetchAsync({
+                await this.fetchRaw({
                     method: 'GET',
                     args: ['auth', 'web3', 'is-valid'],
-                    token: token,
+                    token: token
                 })
             ),
         deactivateToken: async () =>
             cookies.accessToken.useAsync(async token =>
-                await this.fetchAsync({
+                await this.fetchRaw({
                     method: 'DELETE',
                     args: ['auth', 'web3', 'deactivate'],
                     acceptOption: '',
-                    token: token,
+                    token: token
                 })
             )
     };
 
     user = {
+        updateTimeInSeconds: 30,
         get: () =>
-            cookies.accessToken.use(token => {
-                    return this.fetchSWR({
-                        method: 'GET',
-                        args: ['user'],
-                        token: token,
-                        swrOptions: {refreshInterval: 30000}
-                    });
-                },
-                this.nullResponses.SWR
+            cookies.accessToken.use(token =>
+                this.fetchWithLocalStorage({
+                    method: 'GET',
+                    args: ['user'],
+                    token: token,
+                    validTime: {seconds: this.user.updateTimeInSeconds}
+                }),
+                () => this.nullResponse
             ),
         patch: async (userData) =>
             cookies.accessToken.useAsync(async token =>
-                await this.fetchAsync({
+                await this.fetchRaw({
                     method: 'PATCH',
                     args: ['user'],
                     token: token,
-                    body: userData,
+                    body: userData
                 })
             )
     };
@@ -158,56 +209,45 @@ class UserAPI {
     docs = {
         grab: async () =>
             cookies.accessToken.useAsync(async token =>
-                await this.fetchAsync({
+                await this.fetchRaw({
                     method: 'PATCH',
                     args: ['docs', 'grab'],
-                    token: token,
+                    token: token
                 })
             ),
         checkStatus: () =>
-            cookies.accessToken.use(token => {
-                    return this.fetchSWR({
-                        method: 'GET',
-                        args: ['docs', 'check-status'],
-                        token: token,
-                        immutable: true
-                    });
-                },
-                this.nullResponses.SWR
+            cookies.accessToken.use(token =>
+                this.fetchWithLocalStorage({
+                    method: 'GET',
+                    args: ['docs', 'check-status'],
+                    token: token
+                }),
+                () => this.nullResponse
             )
     };
 
     quests = {
-        get: (questId = null) => {
-            const args = !!questId ? ['quests', questId] : ['quests'];
-            return this.fetchSWR({
+        get: (questId = null) =>
+            this.fetchWithLocalStorage({
                 method: 'GET',
-                args: args,
-                immutable: true
-            });
-        }
+                args: questId ? ['quests', questId] : ['quests']
+            })
     };
 
     chains = {
-        get: (chainId = null) => {
-            const args = !!chainId ? ['chains', chainId] : ['chains'];
-            return this.fetchSWR({
+        get: (chainId = null) =>
+            this.fetchWithLocalStorage({
                 method: 'GET',
-                args: args,
-                immutable: true
-            });
-        }
+                args: chainId ? ['chains', chainId] : ['chains']
+            })
     };
 
     projects = {
-        get: (projectId = null) => {
-            const args = !!projectId ? ['projects', projectId] : ['projects'];
-            return this.fetchSWR({
+        get: (projectId = null) =>
+            this.fetchWithLocalStorage({
                 method: 'GET',
-                args: args,
-                immutable: true
-            });
-        }
+                args: projectId ? ['projects', projectId] : ['projects']
+            })
     };
 }
 

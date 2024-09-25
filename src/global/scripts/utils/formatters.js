@@ -16,19 +16,26 @@ const timeFromDatetime = (datetime) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
 
-    return `${day}.${month}.${year}`;
+    return '.'.join([day, month, year]);
 };
 
-const timeLeftToDate = (
-    {
-        days = 0,
-        hours = 0,
-        minutes = 0,
-        seconds = 0
-    }
-) => {
-    const totalSeconds = (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
-    return new Date(totalSeconds * 1000);
+const timeLeftToMilliseconds = ({
+    days = 0,
+    hours = 0,
+    minutes = 0,
+    seconds = 0
+}) => {
+    return ((days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
+}
+
+const timeLeftToDate = ({
+    days = 0,
+    hours = 0,
+    minutes = 0,
+    seconds = 0
+}) => {
+    const totalMilliseconds = timeLeftToMilliseconds({days, hours, minutes, seconds});
+    return new Date(Date.now() + totalMilliseconds);
 }
 
 const formatUsername = (username) => {
@@ -49,6 +56,6 @@ const formatWalletAddress = (address) => {
 };
 
 export {
-    timeFromTimestamp, timeFromDatetime, timeLeftToDate,
+    timeFromTimestamp, timeFromDatetime, timeLeftToMilliseconds, timeLeftToDate,
     formatUsername, formatWalletAddress
 };

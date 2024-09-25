@@ -312,8 +312,7 @@ const PingWidget = () => {
                 }
 
                 setPingLoading(false);
-            })
-        ;
+            });
     }
 
     const [pingLoading, setPingLoading] = useState(true);
